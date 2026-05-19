@@ -184,51 +184,51 @@ export const leadCards = [
 
 export const testimonials = [
   {
-    title: "Atendimento claro e profissional",
+    title: "Eu estava bem perdido no contrato",
     quote:
-      "A equipe explicou meu contrato de forma simples, com calma e sem prometer milagre. Me senti muito mais seguro para entender os próximos passos.",
-    author: "Carlos",
+      "Mandei os dados achando que ia receber uma resposta pronta, mas foram me perguntando parte por parte. Deu para entender melhor o que eu tinha assinado.",
+    author: "Marcelo",
     location: "São Paulo, SP",
     rating: 5,
   },
   {
-    title: "Sem pressão e com orientação",
+    title: "Não me senti pressionada",
     quote:
-      "Gostei porque primeiro entenderam minha situação, depois explicaram as possibilidades de forma responsável. O atendimento foi humano e direto.",
-    author: "Juliana",
-    location: "Belo Horizonte, MG",
+      "Eu tinha receio de chamar e já tentarem vender alguma coisa. Foi diferente: primeiro ouviram meu caso, olharam as informações e explicaram com calma.",
+    author: "Luciana",
+    location: "Guarulhos, SP",
     rating: 5,
   },
   {
-    title: "Finalmente entendi o que estava pagando",
+    title: "Consegui enxergar melhor a parcela",
     quote:
-      "Eu via CET, juros e tarifas no contrato, mas não sabia interpretar. A análise trouxe clareza e mostrou pontos que eu precisava observar melhor.",
-    author: "Rafael",
-    location: "Curitiba, PR",
+      "Eu só olhava o valor que caía todo mês e ficava achando que não saía do lugar. A conversa ajudou a separar parcela, taxa, prazo e o que precisava conferir.",
+    author: "Renato",
+    location: "Osasco, SP",
     rating: 5,
   },
   {
-    title: "Equipe muito atenciosa",
+    title: "Falaram de um jeito normal",
     quote:
-      "Tive um atendimento cuidadoso desde o primeiro contato. Explicaram o que seria analisado e deixaram claro que tudo dependia do caso concreto.",
-    author: "Fernanda",
-    location: "Goiânia, GO",
-    rating: 5,
-  },
-  {
-    title: "Me ajudou a organizar a situação",
-    quote:
-      "Eu estava preocupado com as parcelas atrasadas e não sabia por onde começar. A conversa foi objetiva e me deu mais clareza sobre o contrato.",
-    author: "André",
-    location: "Rio de Janeiro, RJ",
-    rating: 5,
-  },
-  {
-    title: "Análise séria",
-    quote:
-      "O que mais gostei foi a postura técnica. Não senti exagero nem promessa vazia, só uma orientação bem feita sobre meu financiamento.",
+      "Eu não entendo esses termos de banco. O que gostei é que não ficaram usando palavra difícil para parecer bonito. Explicaram no português do dia a dia.",
     author: "Patrícia",
-    location: "Florianópolis, SC",
+    location: "Contagem, MG",
+    rating: 5,
+  },
+  {
+    title: "Eu estava com parcela atrasada",
+    quote:
+      "Achei que iam me julgar por estar atrasado, mas o atendimento foi bem respeitoso. Saí com mais noção do que precisava organizar e enviar.",
+    author: "Diego",
+    location: "São José dos Pinhais, PR",
+    rating: 5,
+  },
+  {
+    title: "Foi bem direto, sem promessa",
+    quote:
+      "Gostei justamente porque não prometeram nada de cara. Pediram as informações, explicaram o que dava para avaliar e foram honestos sobre depender do contrato.",
+    author: "Aline",
+    location: "Lauro de Freitas, BA",
     rating: 5,
   },
 ];
