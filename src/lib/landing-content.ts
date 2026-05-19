@@ -54,7 +54,6 @@ export const heroIndicators = [
   { title: "Atendimento humanizado", icon: HeartHandshake },
   { title: "Análise técnica especializada", icon: BadgeCheck },
   { title: "Atendimento em todo Brasil", icon: MapPin },
-  { title: "Foco em financiamento de veículos", icon: Car },
 ];
 
 export const pains = [
@@ -228,10 +227,5 @@ export const faqs = [
     question: "Quais documentos preciso enviar?",
     answer:
       "No primeiro contato, solicitamos apenas dados básicos. Depois, se fizer sentido avançar, a equipe poderá pedir contrato, carnê, extrato, comprovantes ou documentos complementares.",
-  },
-  {
-    question: "A GRS promete resultado?",
-    answer:
-      "Não. A GRS trabalha com análise, orientação e acompanhamento. Resultado financeiro depende do caso concreto, da documentação, da resposta do banco e da via escolhida.",
   },
 ];
