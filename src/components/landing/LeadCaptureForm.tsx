@@ -76,8 +76,12 @@ export function LeadCaptureForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-lg border border-zinc-200 bg-white p-5 shadow-2xl shadow-zinc-950/10 sm:p-6"
+      className="premium-card rounded-lg border border-red-100 bg-white p-5 shadow-2xl shadow-red-950/15 ring-1 ring-white sm:p-6"
     >
+      <div className="mb-5 rounded-md border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
+        Preenchimento rápido • Atendimento humanizado • Análise individual
+      </div>
+
       <div className="grid gap-4">
         <Field label="Nome completo" error={errors.nome?.message}>
           <input {...register("nome")} className={inputClass} placeholder="Seu nome e sobrenome" autoComplete="name" />

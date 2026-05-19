@@ -5,8 +5,9 @@ import { leadCards } from "@/lib/landing-content";
 
 export function LeadSection() {
   return (
-    <section id="lead-form" className="border-b border-zinc-200 bg-zinc-50 py-16 sm:py-24">
-      <Container>
+    <section id="lead-form" className="relative overflow-hidden border-b border-zinc-200 bg-zinc-50 py-16 sm:py-24">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_14%,rgba(227,6,19,0.10),transparent_28%),linear-gradient(180deg,#f7f7f8_0%,#ffffff_100%)]" aria-hidden />
+      <Container className="relative z-10">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="lg:sticky lg:top-28">
             <SectionHeading title="Solicite sua análise gratuita">
@@ -16,7 +17,10 @@ export function LeadSection() {
 
             <div className="mt-8 grid gap-3">
               {leadCards.map(({ icon: Icon, text, title }) => (
-                <article key={title} className="flex items-start gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+                <article
+                  key={title}
+                  className="premium-card flex items-start gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-red-200 hover:shadow-lg hover:shadow-red-950/10"
+                >
                   <span className="grid size-10 shrink-0 place-items-center rounded-md bg-red-50 text-red-700">
                     <Icon className="size-5" aria-hidden />
                   </span>

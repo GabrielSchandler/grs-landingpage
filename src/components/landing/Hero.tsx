@@ -9,8 +9,14 @@ export function Hero() {
   const whatsAppHref = getWhatsAppHref();
 
   return (
-    <section className="relative overflow-hidden border-b border-zinc-200 bg-white">
+    <section className="relative isolate overflow-hidden border-b border-zinc-200 bg-white">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(227,6,19,0.10),transparent_28%),radial-gradient(circle_at_85%_20%,rgba(24,24,27,0.06),transparent_28%),linear-gradient(180deg,#fff_0%,#f7f7f8_100%)]" />
+      <div
+        className="absolute inset-0 -z-10 opacity-[0.045] [background-image:linear-gradient(#18181b_1px,transparent_1px),linear-gradient(90deg,#18181b_1px,transparent_1px)] [background-size:34px_34px]"
+        aria-hidden
+      />
+      <div className="animate-float-soft absolute left-[6%] top-28 hidden h-20 w-20 rounded-full border border-red-100 bg-white/70 shadow-xl shadow-red-950/10 lg:block" aria-hidden />
+      <div className="animate-float-soft absolute right-[8%] top-20 hidden h-28 w-28 rounded-full border border-zinc-200 bg-white/80 shadow-2xl shadow-zinc-950/10 lg:block [animation-delay:900ms]" aria-hidden />
       <Container className="relative z-10 grid items-center gap-10 py-10 sm:py-16 lg:min-h-[calc(82vh-5rem)] lg:grid-cols-[0.95fr_1.05fr] lg:py-20">
         <div className="max-w-3xl animate-rise-in">
           <h1 className="text-[2.42rem] font-semibold leading-[1.02] text-zinc-950 sm:text-5xl lg:text-6xl">
@@ -47,7 +53,7 @@ export function Hero() {
 
         <div className="relative animate-rise-in [animation-delay:120ms]">
           <div className="absolute -inset-5 rounded-lg bg-[#e30613]/12 blur-2xl" aria-hidden />
-          <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-2xl shadow-zinc-950/12">
+          <div className="premium-card relative overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-2xl shadow-zinc-950/12">
             <Image
               src="/grs-hero-vehicle-contract.png"
               alt="Contrato, calculadora e veículo desfocado em escritório moderno para análise de financiamento."
@@ -56,6 +62,10 @@ export function Hero() {
               className="aspect-[1.42] h-full w-full object-cover"
               priority
             />
+            <div className="animate-float-soft absolute right-5 top-5 hidden items-center gap-2 rounded-full border border-white/70 bg-white/90 px-4 py-2 text-xs font-semibold text-zinc-800 shadow-lg shadow-zinc-950/12 backdrop-blur sm:flex">
+              <span className="size-2 rounded-full bg-[#e30613] shadow-[0_0_0_5px_rgba(227,6,19,0.12)]" aria-hidden />
+              Contrato em análise
+            </div>
             <div className="absolute bottom-4 left-4 right-4 rounded-lg border border-white/70 bg-white/90 p-4 shadow-xl shadow-zinc-950/12 backdrop-blur-md sm:left-6 sm:right-auto sm:w-[21rem]">
               <p className="text-base font-semibold text-zinc-950">{heroCopy.diagnosticTitle}</p>
               <p className="mt-1 text-sm leading-6 text-zinc-600">{heroCopy.diagnosticText}</p>
@@ -65,9 +75,9 @@ export function Hero() {
       </Container>
 
       <Container className="pb-8 sm:pb-12">
-        <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-3 shadow-lg shadow-zinc-950/6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-3 shadow-lg shadow-zinc-950/6 sm:grid-cols-2 lg:grid-cols-3">
           {heroIndicators.map(({ icon: Icon, title }) => (
-            <div key={title} className="flex items-center gap-3 rounded-md bg-zinc-50 px-4 py-3">
+            <div key={title} className="premium-card flex items-center gap-3 rounded-md bg-zinc-50 px-4 py-3">
               <span className="grid size-10 place-items-center rounded-md bg-red-50 text-[#e30613]">
                 <Icon className="size-5" aria-hidden />
               </span>

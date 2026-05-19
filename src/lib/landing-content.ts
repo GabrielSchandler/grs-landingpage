@@ -184,20 +184,52 @@ export const leadCards = [
 
 export const testimonials = [
   {
+    title: "Atendimento claro e profissional",
     quote:
-      "Eu não entendia por que meu financiamento crescia tanto. A análise me ajudou a enxergar melhor minha situação.",
+      "A equipe explicou meu contrato de forma simples, com calma e sem prometer milagre. Me senti muito mais seguro para entender os próximos passos.",
     author: "Carlos",
-    location: "SP",
+    location: "São Paulo, SP",
+    rating: 5,
   },
   {
-    quote: "A equipe explicou meu contrato de forma simples e sem pressão.",
+    title: "Sem pressão e com orientação",
+    quote:
+      "Gostei porque primeiro entenderam minha situação, depois explicaram as possibilidades de forma responsável. O atendimento foi humano e direto.",
     author: "Juliana",
-    location: "MG",
+    location: "Belo Horizonte, MG",
+    rating: 5,
   },
   {
-    quote: "Finalmente consegui entender CET, juros e o que estava pagando.",
+    title: "Finalmente entendi o que estava pagando",
+    quote:
+      "Eu via CET, juros e tarifas no contrato, mas não sabia interpretar. A análise trouxe clareza e mostrou pontos que eu precisava observar melhor.",
     author: "Rafael",
-    location: "PR",
+    location: "Curitiba, PR",
+    rating: 5,
+  },
+  {
+    title: "Equipe muito atenciosa",
+    quote:
+      "Tive um atendimento cuidadoso desde o primeiro contato. Explicaram o que seria analisado e deixaram claro que tudo dependia do caso concreto.",
+    author: "Fernanda",
+    location: "Goiânia, GO",
+    rating: 5,
+  },
+  {
+    title: "Me ajudou a organizar a situação",
+    quote:
+      "Eu estava preocupado com as parcelas atrasadas e não sabia por onde começar. A conversa foi objetiva e me deu mais clareza sobre o contrato.",
+    author: "André",
+    location: "Rio de Janeiro, RJ",
+    rating: 5,
+  },
+  {
+    title: "Análise séria",
+    quote:
+      "O que mais gostei foi a postura técnica. Não senti exagero nem promessa vazia, só uma orientação bem feita sobre meu financiamento.",
+    author: "Patrícia",
+    location: "Florianópolis, SC",
+    rating: 5,
   },
 ];
 

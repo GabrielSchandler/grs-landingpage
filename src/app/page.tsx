@@ -6,6 +6,7 @@ import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { LeadSection } from "@/components/landing/LeadSection";
 import { PainPoints } from "@/components/landing/PainPoints";
+import { SocialProof } from "@/components/landing/SocialProof";
 import { TrustSection } from "@/components/landing/TrustSection";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
         <HowItWorks />
         <ContractTypes />
         <TrustSection />
+        <SocialProof />
         <LeadSection />
         <FAQSection />
       </main>
