@@ -3,16 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Loader2, Send } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   contractTypeOptions,
   leadSchema,
-  toLeadPayload,
   type LeadFormInput,
   type LeadFormValues,
 } from "@/lib/lead-schema";
-import { getSupabaseBrowserClient } from "@/lib/supabase";
-import { getWhatsAppHref } from "@/lib/whatsapp";
 import { trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 
@@ -27,8 +24,8 @@ export function LeadCaptureForm() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
-    watch,
   } = useForm<LeadFormInput, unknown, LeadFormValues>({
     resolver: zodResolver(leadSchema),
     mode: "onChange",
@@ -43,11 +40,10 @@ export function LeadCaptureForm() {
     },
   });
 
-  const nome = watch("nome");
-  const whatsapp = watch("whatsapp");
-  const tipoContrato = watch("tipo_contrato");
-  const valorParcela = watch("valor_parcela");
-  const parcelasAtrasadas = watch("parcelas_atrasadas");
+  const [nome = "", whatsapp = "", tipoContrato = "", valorParcela = "", parcelasAtrasadas = ""] = useWatch({
+    control,
+    name: ["nome", "whatsapp", "tipo_contrato", "valor_parcela", "parcelas_atrasadas"],
+  });
 
   const essentialFieldsFilled =
     nome.trim().length >= 3 &&
@@ -60,15 +56,24 @@ export function LeadCaptureForm() {
     setFeedback(null);
 
     try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+
+      if (!response.ok || result?.ok !== true) {
+        throw new Error(result?.error || "Não foi possível enviar agora. Tente novamente em instantes.");
+      }
+
       trackEvent("lead_form_submit", {
         tipo_contrato: values.tipo_contrato,
         valor_parcela: values.valor_parcela,
       });
-
-      const supabase = getSupabaseBrowserClient();
-      const { error } = await supabase.from("leads_landing_page").insert(toLeadPayload(values));
-
-      if (error) throw error;
 
       setIsSuccess(true);
       reset();

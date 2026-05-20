@@ -19,8 +19,8 @@ cp .env.example .env.local
 ```
 
 **Obrigatório:**
-- `NEXT_PUBLIC_SUPABASE_URL` — URL do seu projeto Supabase
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Chave anon do Supabase
+- `GOOGLE_SHEETS_WEBHOOK_URL` — URL `/exec` do Web App do Google Apps Script
+- `GOOGLE_SHEETS_WEBHOOK_SECRET` — segredo privado usado para proteger o webhook
 - `NEXT_PUBLIC_WHATSAPP_NUMBER` — Seu número (formato: 55119876543)
 
 **Recomendado para tráfego pago:**
@@ -36,9 +36,47 @@ Acesse `http://localhost:3000` no navegador.
 
 ---
 
-## 2. Configurar Rastreamento de Conversão
+## 2. Configurar Google Sheets para receber leads
 
-### 2.1 Google Analytics 4 (GA4)
+O formulário envia os dados para `POST /api/leads`. Essa rota valida os campos no servidor e repassa o lead para o Web App do Google Apps Script, que grava uma nova linha na planilha.
+
+### 2.1 Preparar a planilha
+
+1. Abra a planilha criada no Google Sheets.
+2. Renomeie uma aba para `Leads` ou escolha outro nome e use o mesmo valor em `SHEET_NAME`.
+3. Copie o ID da planilha pela URL. Ele fica entre `/d/` e `/edit`.
+
+Exemplo:
+```text
+https://docs.google.com/spreadsheets/d/ID_DA_PLANILHA/edit
+```
+
+### 2.2 Criar o Apps Script
+
+1. Na planilha, vá em `Extensões > Apps Script`.
+2. Apague o conteúdo padrão do arquivo `Code.gs`.
+3. Cole o conteúdo de `google-apps-script/Code.gs`.
+4. Em `Configurações do projeto > Propriedades do script`, crie:
+   - `SPREADSHEET_ID`: ID da sua planilha
+   - `SHEET_NAME`: `Leads`
+   - `WEBHOOK_SECRET`: uma senha/frase longa, igual à variável `GOOGLE_SHEETS_WEBHOOK_SECRET`
+
+### 2.3 Publicar como Web App
+
+1. Clique em `Implantar > Nova implantação`.
+2. Selecione o tipo `App da Web`.
+3. Em `Executar como`, escolha `Eu`.
+4. Em `Quem pode acessar`, escolha `Qualquer pessoa`.
+5. Clique em `Implantar`, autorize o acesso e copie a URL terminada em `/exec`.
+6. Cole essa URL em `GOOGLE_SHEETS_WEBHOOK_URL`.
+
+Depois disso, todo envio do formulário deve criar uma linha na planilha.
+
+---
+
+## 3. Configurar Rastreamento de Conversão
+
+### 3.1 Google Analytics 4 (GA4)
 
 1. Acesse [analytics.google.com](https://analytics.google.com)
 2. Crie uma nova propriedade (se não houver) ou use a existente
@@ -50,7 +88,7 @@ Acesse `http://localhost:3000` no navegador.
    - Tipo: Evento
    - Marcar caixa para "Contar cada evento como uma conversão"
 
-### 2.2 Google Tag Manager (GTM)
+### 3.2 Google Tag Manager (GTM)
 
 1. Acesse [tagmanager.google.com](https://tagmanager.google.com)
 2. Crie um novo container (se não houver) — Tipo: Web
@@ -60,7 +98,7 @@ Acesse `http://localhost:3000` no navegador.
    - Crie um trigger para "evento_lead_form_submit"
    - Crie uma tag para enviar evento ao GA4
 
-### 2.3 Meta Pixel (Opcional, mas recomendado para retargeting)
+### 3.3 Meta Pixel (Opcional, mas recomendado para retargeting)
 
 1. Acesse [business.facebook.com](https://business.facebook.com)
 2. Vá para Eventos > Pixels
@@ -70,9 +108,9 @@ Acesse `http://localhost:3000` no navegador.
 
 ---
 
-## 3. Configurar Google Ads
+## 4. Configurar Google Ads
 
-### 3.1 Criar conversão no Google Ads
+### 4.1 Criar conversão no Google Ads
 
 1. Acesse [ads.google.com](https://ads.google.com)
 2. Vá para Ferramentas > Conversões
@@ -84,7 +122,7 @@ Acesse `http://localhost:3000` no navegador.
 8. **Contagem:** "Cada conversão"
 9. Copie o código de rastreamento — use em sua conta do GTM ou adicione script direto
 
-### 3.2 Usar Google Tag Manager ou conectar diretamente
+### 4.2 Usar Google Tag Manager ou conectar diretamente
 
 **Opção A: Via GTM (recomendado)**
 - Crie uma tag no GTM que envia evento "lead_form_submit" ao Google Ads
@@ -93,7 +131,7 @@ Acesse `http://localhost:3000` no navegador.
 **Opção B: Direto via Google Analytics 4**
 - GA4 envia eventos automaticamente ao Google Ads se conectado
 
-### 3.3 Criar campanhas de anúncios
+### 4.3 Criar campanhas de anúncios
 
 **Tipo de campanha:** Pesquisa ou Rede de Display
 **Público-alvo:**
@@ -109,7 +147,7 @@ Acesse `http://localhost:3000` no navegador.
 
 ---
 
-## 4. Otimizações para Conversão (Implementadas)
+## 5. Otimizações para Conversão (Implementadas)
 
 ✅ **Já foi feito:**
 1. **Formulário reduzido:** Apenas 5 campos essenciais visíveis (progressive disclosure)
@@ -122,9 +160,9 @@ Acesse `http://localhost:3000` no navegador.
 
 ---
 
-## 5. Dicas Adicionais para Conversão
+## 6. Dicas Adicionais para Conversão
 
-### 5.1 Melhorias possíveis
+### 6.1 Melhorias possíveis
 - [ ] Adicionar limite de rate para form submission (previne spam)
 - [ ] Implementar reCAPTCHA v3 (veja `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`)
 - [ ] Criar variante sem imagem hero para teste A/B
@@ -132,25 +170,25 @@ Acesse `http://localhost:3000` no navegador.
 - [ ] Adicionar "oferta limitada" ou urgência temporal (se aplicável)
 - [ ] Expandir social proof com mais depoimentos
 
-### 5.2 Mobile first
+### 6.2 Mobile first
 - Página está otimizada para mobile
 - Testou em celular? Abra `http://localhost:3000` no seu mobile
 
-### 5.3 Performance
+### 6.3 Performance
 - Imagens usam `next/image` (otimizado)
 - CSS é minificado (TailwindCSS)
 - Scripts de rastreamento carregam com `strategy="afterInteractive"`
 
 ---
 
-## 6. Build & Deploy
+## 7. Build & Deploy
 
-### 6.1 Build local
+### 7.1 Build local
 ```bash
 npm run build
 ```
 
-### 6.2 Deploy (Vercel recomendado para Next.js)
+### 7.2 Deploy (Vercel recomendado para Next.js)
 
 **Opção A: Vercel (1-click)**
 1. Push do código para GitHub
@@ -162,48 +200,48 @@ npm run build
 - Exportar com `npm run build` e `npm run start`
 - Certifique-se de que o servidor Node.js está rodando
 
-### 6.3 Domínio customizado
+### 7.3 Domínio customizado
 - Aponte seu domínio (DNS) para o servidor do Vercel
 - Configure SSL/HTTPS (automático no Vercel)
 
 ---
 
-## 7. Monitoramento & Analytics
+## 8. Monitoramento & Analytics
 
-### 7.1 Métricas importantes
+### 8.1 Métricas importantes
 - **Taxa de conversão:** Visitantes → Leads
 - **Custo por lead (CPL):** Gasto / Leads capturados
 - **Retorno sobre ad spend (ROAS):** Valor da conversão / Gasto
 - **Bounce rate:** Pessoas saindo sem converter
 - **Tempo na página:** Indicador de engajamento
 
-### 7.2 Onde acompanhar
+### 8.2 Onde acompanhar
 - **GA4:** Dashboard padrão (Aquisição > Campanhas)
 - **Google Ads:** Colunas de conversão na campanha
-- **Supabase:** Tabela `leads_landing_page` (dados brutos)
+- **Google Sheets:** Aba configurada em `SHEET_NAME` (dados brutos dos leads)
 
 ---
 
-## 8. Segurança & Conformidade
+## 9. Segurança & Conformidade
 
-✅ **Já implementado:**
-- RLS (Row Level Security) no Supabase
-- Policy que permite insert anônimo apenas de landing_page
+- Webhook protegido por `GOOGLE_SHEETS_WEBHOOK_SECRET`
+- Envio server-side em `/api/leads`, sem expor a URL do Apps Script no navegador
 - Aviso de LGPD no formulário e página de obrigado
 
 **Adicionar futuramente:**
 - [ ] reCAPTCHA v3 para prevenção de bots
 - [ ] Rate limit de 1 submissão por IP/hora
 - [ ] Validação de email (verificar se existe)
-- [ ] Endpoint server-side (API Route) em vez de direto no browser
+- [ ] Backup por e-mail em caso de falha no Google Sheets
 
 ---
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 ### Problema: Formulário não envia
-- Verifique `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- Verifique policy no Supabase: `select * from leads_landing_page;`
+- Verifique `GOOGLE_SHEETS_WEBHOOK_URL` e `GOOGLE_SHEETS_WEBHOOK_SECRET`
+- Verifique se o Apps Script foi publicado como Web App com acesso "Qualquer pessoa"
+- Verifique se `WEBHOOK_SECRET` nas propriedades do Apps Script é igual ao valor da Vercel
 - Abra DevTools (F12) > Console para ver erro exato
 
 ### Problema: Não aparecem conversões no GA4
@@ -217,9 +255,9 @@ npm run build
 
 ---
 
-## 10. Próximos Passos (Road Map)
+## 11. Próximos Passos (Road Map)
 
-1. **Server-side form handler:** Criar API route (`/api/leads`) para segurança
+1. **Rate limit:** limitar tentativas por IP para reduzir spam
 2. **Email confirmation:** Enviar confirmação por email após submissão
 3. **CRM integration:** Conectar com CRM (ex: RD Station, Pipedrive)
 4. **Chatbot:** Adicionar chat de pré-atendimento (ex: Intercom)
@@ -229,7 +267,8 @@ npm run build
 ---
 
 **Dúvidas?** Consulte a documentação do:
-- Supabase: https://supabase.com/docs
+- Apps Script Web Apps: https://developers.google.com/apps-script/guides/web
+- Google Sheets / Apps Script: https://developers.google.com/apps-script/reference/spreadsheet
 - Next.js: https://nextjs.org/docs
 - Google Analytics: https://support.google.com/analytics
 - Google Ads: https://support.google.com/google-ads
