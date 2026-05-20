@@ -9,9 +9,7 @@ export const metadata = {
 };
 
 export default function ThanksPage() {
-  const whatsAppHref = getWhatsAppHref(
-    "Olá! Solicitei uma análise pela landing page e gostaria de acompanhar o progresso."
-  );
+  const whatsAppHref = getWhatsAppHref("postSubmit");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50/20 to-white flex flex-col">

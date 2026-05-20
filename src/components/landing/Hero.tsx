@@ -1,12 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
+import { trackEvent } from "@/lib/tracking";
 import { getWhatsAppHref } from "@/lib/whatsapp";
 import { credibilityNumbers, heroBadges, heroCopy, heroIndicators } from "@/lib/landing-content";
 
 export function Hero() {
-  const whatsAppHref = getWhatsAppHref();
+  const whatsAppHref = getWhatsAppHref("hero");
 
   return (
     <section className="relative isolate overflow-hidden bg-zinc-950">
@@ -43,6 +46,7 @@ export function Hero() {
               target={whatsAppHref.startsWith("http") ? "_blank" : undefined}
               variant="dark-outline"
               className="min-h-14 px-7 text-base"
+              onClick={() => trackEvent("whatsapp_click", { source: "hero" })}
             >
               Falar com especialista
             </ButtonLink>

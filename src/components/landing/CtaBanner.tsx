@@ -1,10 +1,13 @@
+"use client";
+
 import { ArrowRight, Clock, MessageCircle, ShieldCheck } from "lucide-react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
+import { trackEvent } from "@/lib/tracking";
 import { getWhatsAppHref } from "@/lib/whatsapp";
 
 export function CtaBanner() {
-  const whatsAppHref = getWhatsAppHref();
+  const whatsAppHref = getWhatsAppHref("ctaBanner");
 
   return (
     <section className="relative overflow-hidden bg-[#e30613] py-16 sm:py-20">
@@ -42,6 +45,7 @@ export function CtaBanner() {
               variant="dark-outline"
               className="min-h-14 px-8 text-base"
               icon={<MessageCircle size={18} aria-hidden />}
+              onClick={() => trackEvent("whatsapp_click", { source: "ctaBanner" })}
             >
               Falar no WhatsApp
             </ButtonLink>

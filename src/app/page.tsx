@@ -13,7 +13,7 @@ import { TrustSection } from "@/components/landing/TrustSection";
 import { getWhatsAppHref } from "@/lib/whatsapp";
 
 export default function Home() {
-  const whatsAppHref = getWhatsAppHref();
+  const whatsAppHref = getWhatsAppHref("floating");
 
   return (
     <>
