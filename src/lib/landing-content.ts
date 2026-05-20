@@ -48,18 +48,18 @@ export const heroCopy = {
 export const heroBadges = [
   { label: "100% Gratuito", icon: HeartHandshake },
   { label: "Sem compromisso", icon: ShieldCheck },
-  { label: "Retorno em até 1h", icon: Clock },
+  { label: "Retorno em até 1h (horário comercial)", icon: Clock },
 ];
 
 export const heroIndicators = [
   { title: "Análise técnica especializada", icon: BadgeCheck },
-  { title: "Retorno em até 1h", icon: Clock },
+  { title: "Retorno em até 1h (horário comercial)", icon: Clock },
   { title: "Atendimento em todo o Brasil", icon: MapPin },
 ];
 
 export const credibilityNumbers = [
   { value: "100%", label: "Gratuito e sem compromisso" },
-  { value: "1h", label: "Prazo máximo de retorno" },
+  { value: "1h", label: "Prazo de retorno em horário comercial" },
   { value: "5+", label: "Modalidades de contrato" },
   { value: "Brasil", label: "Atendimento nacional" },
 ];
@@ -186,8 +186,8 @@ export const leadCards = [
     icon: CheckCircle2,
   },
   {
-    title: "Retorno em até 24 horas",
-    text: "Nossa equipe analisa seu caso e entra em contato pelo WhatsApp para explicar o que foi encontrado.",
+    title: "Retorno em até 1h em horário comercial",
+    text: "Nossa equipe analisa seu caso e entra em contato pelo WhatsApp para explicar o que foi encontrado. Atendemos de segunda a sexta, das 9h às 18h.",
     icon: FileSearch,
   },
   {
@@ -263,7 +263,7 @@ export const faqs = [
   {
     question: "Em quanto tempo recebo o retorno?",
     answer:
-      "Nossa equipe busca retornar em até 24 horas úteis após o envio dos dados. Em casos que exigem análise mais detalhada ou documentação adicional, o prazo pode ser um pouco maior — e você será avisado.",
+      "Nossa equipe retorna em até 1h em horário comercial (segunda a sexta, das 9h às 18h). Solicitações fora desse horário são respondidas no próximo expediente. Casos que exigem análise mais detalhada podem ter prazo um pouco maior — você será avisado.",
   },
   {
     question: "A análise garante redução da parcela?",

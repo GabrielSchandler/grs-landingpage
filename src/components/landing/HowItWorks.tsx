@@ -18,7 +18,7 @@ export function HowItWorks() {
             <div className="mt-8 rounded-xl border border-zinc-100 bg-zinc-50 p-5">
               <p className="text-sm font-semibold text-zinc-900">Do envio ao retorno:</p>
               <p className="mt-1 text-sm leading-6 text-zinc-600">
-                Em menos de 2 minutos você preenche os dados. Nossa equipe analisa e retorna em até 1 hora com uma
+                Em menos de 2 minutos você preenche os dados. Nossa equipe analisa e retorna em até 1h em horário comercial com uma
                 orientação clara sobre o que foi identificado.
               </p>
             </div>
