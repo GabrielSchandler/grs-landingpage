@@ -47,6 +47,10 @@ function phoneDigitCount(value: string) {
   return (value.match(/\d/g) ?? []).length;
 }
 
+function onlyDigits(value: string) {
+  return value.replace(/\D/g, "");
+}
+
 export function WhatsAppLeadButton({
   children,
   className,
@@ -84,6 +88,54 @@ export function WhatsAppLeadButton({
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const phoneDigits = onlyDigits(whatsapp);
+
+    if (phoneDigits.length < 10) {
+      return;
+    }
+
+    const storageDate = new Date().toISOString().slice(0, 10);
+    const storageKey = `grs-whatsapp-popup-autosave:${storageDate}:${phoneDigits}`;
+
+    if (window.localStorage.getItem(storageKey)) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nome,
+            whatsapp,
+            origem: "whatsapp_popup_autosave",
+          }),
+        });
+        const result = (await response.json().catch(() => null)) as { ok?: boolean } | null;
+
+        if (response.ok && result?.ok === true) {
+          window.localStorage.setItem(storageKey, new Date().toISOString());
+          trackEvent("whatsapp_popup_autosave", {
+            placement,
+            has_nome: Boolean(nome.trim()),
+          });
+        }
+      } catch {
+        // Popup autosave is intentionally silent so the WhatsApp flow stays fast.
+      }
+    }, 1400);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [nome, open, placement, whatsapp]);
 
   function openModal() {
     setFeedback(null);
@@ -160,23 +212,11 @@ export function WhatsAppLeadButton({
                 Antes de abrir o WhatsApp
               </h2>
               <p id={descriptionId} className="mt-2 text-sm leading-6 text-zinc-600">
-                Informe nome e telefone para a GRS registrar seu contato. Depois você será levado direto para o WhatsApp.
+                Informe telefone e nome para a GRS registrar seu contato. Depois você será levado direto para o WhatsApp.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-5 grid gap-4">
-              <label className="block">
-                <span className="mb-2 block text-sm font-medium text-zinc-800">Seu nome</span>
-                <input
-                  value={nome}
-                  onChange={(event) => setNome(event.target.value)}
-                  className="min-h-11 w-full rounded-md border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-red-400 focus:ring-4 focus:ring-red-100"
-                  placeholder="João"
-                  autoComplete="name"
-                  autoFocus
-                />
-              </label>
-
               <label className="block">
                 <span className="mb-2 block text-sm font-medium text-zinc-800">WhatsApp com DDD</span>
                 <input
@@ -186,6 +226,18 @@ export function WhatsAppLeadButton({
                   placeholder="(11) 94039-4084"
                   autoComplete="tel"
                   inputMode="tel"
+                  autoFocus
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-zinc-800">Seu nome</span>
+                <input
+                  value={nome}
+                  onChange={(event) => setNome(event.target.value)}
+                  className="min-h-11 w-full rounded-md border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-red-400 focus:ring-4 focus:ring-red-100"
+                  placeholder="João"
+                  autoComplete="name"
                 />
               </label>
 

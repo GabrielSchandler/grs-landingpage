@@ -221,15 +221,6 @@ export function LeadCaptureForm() {
 
         {/* All fields visible */}
         <div className="grid gap-4">
-          <Field label="Seu nome" error={errors.nome?.message}>
-            <input
-              {...register("nome")}
-              className={inputClass}
-              placeholder="João"
-              autoComplete="name"
-            />
-          </Field>
-
           <Field label="WhatsApp com DDD" error={errors.whatsapp?.message}>
             <input
               {...register("whatsapp")}
@@ -237,6 +228,15 @@ export function LeadCaptureForm() {
               placeholder="(11) 98765-4321"
               autoComplete="tel"
               inputMode="tel"
+            />
+          </Field>
+
+          <Field label="Seu nome" error={errors.nome?.message}>
+            <input
+              {...register("nome")}
+              className={inputClass}
+              placeholder="João"
+              autoComplete="name"
             />
           </Field>
 

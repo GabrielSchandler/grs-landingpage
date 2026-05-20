@@ -77,3 +77,4 @@ Na coluna `origem`, voce pode separar:
 - `landing_page`: pessoa enviou o formulario principal.
 - `whatsapp_popup`: pessoa clicou em WhatsApp, preencheu o popup e foi redirecionada.
 - `form_autosave`: pessoa digitou um WhatsApp valido no formulario, mas ainda nao clicou em enviar.
+- `whatsapp_popup_autosave`: pessoa digitou um WhatsApp valido no popup, mas ainda nao clicou em continuar.

@@ -32,8 +32,11 @@ export async function POST(request: Request) {
         ? "whatsapp_popup"
         : body?.origem === "form_autosave"
           ? "form_autosave"
-          : "landing_page";
-    const parsed = origem === "form_autosave" ? leadDraftSchema.safeParse(body) : leadSchema.safeParse(body);
+          : body?.origem === "whatsapp_popup_autosave"
+            ? "whatsapp_popup_autosave"
+            : "landing_page";
+    const isDraftLead = origem === "form_autosave" || origem === "whatsapp_popup_autosave";
+    const parsed = isDraftLead ? leadDraftSchema.safeParse(body) : leadSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
     }
 
     const lead =
-      origem === "form_autosave"
+      isDraftLead
         ? toLeadDraftPayload(parsed.data, origem)
         : toLeadPayload(parsed.data, origem);
     const submittedAt = new Date().toISOString();
