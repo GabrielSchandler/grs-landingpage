@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { leadSchema, toLeadPayload, type LeadOrigin } from "@/lib/lead-schema";
+import {
+  leadDraftSchema,
+  leadSchema,
+  toLeadDraftPayload,
+  toLeadPayload,
+  type LeadOrigin,
+} from "@/lib/lead-schema";
 
 export const runtime = "nodejs";
 
@@ -21,7 +27,13 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const parsed = leadSchema.safeParse(body);
+    const origem: LeadOrigin =
+      body?.origem === "whatsapp_popup"
+        ? "whatsapp_popup"
+        : body?.origem === "form_autosave"
+          ? "form_autosave"
+          : "landing_page";
+    const parsed = origem === "form_autosave" ? leadDraftSchema.safeParse(body) : leadSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -30,8 +42,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const origem: LeadOrigin = body?.origem === "whatsapp_popup" ? "whatsapp_popup" : "landing_page";
-    const lead = toLeadPayload(parsed.data, origem);
+    const lead =
+      origem === "form_autosave"
+        ? toLeadDraftPayload(parsed.data, origem)
+        : toLeadPayload(parsed.data, origem);
     const submittedAt = new Date().toISOString();
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);

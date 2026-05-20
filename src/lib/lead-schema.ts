@@ -39,56 +39,91 @@ export function parseCurrencyToNumber(value: string) {
   return Number(normalized);
 }
 
-export const leadSchema = z.object({
-  nome: z
-    .string()
-    .trim()
-    .min(2, "Informe seu nome."),
-  whatsapp: z
-    .string()
-    .trim()
-    .min(1, "Informe seu WhatsApp.")
-    .refine((value) => phoneDigitCount(value) >= 10, {
-      message: "Informe um WhatsApp válido com DDD.",
-    }),
-  tipo_contrato: z
-    .string()
-    .trim()
-    .refine(
-      (value) => value === "" || contractTypeValues.includes(value as (typeof contractTypeValues)[number]),
-      "Selecione um tipo de contrato válido.",
-    )
-    .optional()
-    .default(""),
-  valor_parcela: z
-    .string()
-    .trim()
-    .refine((value) => {
-      if (!value) {
-        return true;
-      }
+const nameSchema = z
+  .string()
+  .trim()
+  .min(2, "Informe seu nome.");
 
-      const parsed = parseCurrencyToNumber(value);
-      return Number.isFinite(parsed) && parsed > 0;
-    }, "Informe um valor de parcela válido.")
-    .optional()
-    .default(""),
-  parcelas_atrasadas: z
-    .string()
-    .refine((value) => value === "" || value === "sim" || value === "nao", "Informe uma opção válida.")
-    .optional()
-    .default(""),
+const whatsappSchema = z
+  .string()
+  .trim()
+  .min(1, "Informe seu WhatsApp.")
+  .refine((value) => phoneDigitCount(value) >= 10, {
+    message: "Informe um WhatsApp válido com DDD.",
+  });
+
+const optionalContractTypeSchema = z
+  .string()
+  .trim()
+  .refine(
+    (value) => value === "" || contractTypeValues.includes(value as (typeof contractTypeValues)[number]),
+    "Selecione um tipo de contrato válido.",
+  )
+  .optional()
+  .default("");
+
+const optionalCurrencySchema = z
+  .string()
+  .trim()
+  .refine((value) => {
+    if (!value) {
+      return true;
+    }
+
+    const parsed = parseCurrencyToNumber(value);
+    return Number.isFinite(parsed) && parsed > 0;
+  }, "Informe um valor de parcela válido.")
+  .optional()
+  .default("");
+
+const optionalOverdueSchema = z
+  .string()
+  .refine((value) => value === "" || value === "sim" || value === "nao", "Informe uma opção válida.")
+  .optional()
+  .default("");
+
+export const leadSchema = z.object({
+  nome: nameSchema,
+  whatsapp: whatsappSchema,
+  tipo_contrato: optionalContractTypeSchema,
+  valor_parcela: optionalCurrencySchema,
+  parcelas_atrasadas: optionalOverdueSchema,
+  banco: z.string().trim().optional(),
+  mensagem: z.string().trim().max(1000, "Use até 1000 caracteres.").optional(),
+});
+
+export const leadDraftSchema = z.object({
+  nome: z.string().trim().optional().default(""),
+  whatsapp: whatsappSchema,
+  tipo_contrato: optionalContractTypeSchema,
+  valor_parcela: optionalCurrencySchema,
+  parcelas_atrasadas: optionalOverdueSchema,
   banco: z.string().trim().optional(),
   mensagem: z.string().trim().max(1000, "Use até 1000 caracteres.").optional(),
 });
 
 export type LeadFormInput = z.input<typeof leadSchema>;
 export type LeadFormValues = z.output<typeof leadSchema>;
-export type LeadOrigin = "landing_page" | "whatsapp_popup";
+export type LeadDraftValues = z.output<typeof leadDraftSchema>;
+export type LeadOrigin = "landing_page" | "whatsapp_popup" | "form_autosave";
 
 export function toLeadPayload(values: LeadFormValues, origem: LeadOrigin = "landing_page") {
   return {
     nome: values.nome.trim(),
+    whatsapp: values.whatsapp.trim(),
+    tipo_contrato: values.tipo_contrato || null,
+    valor_parcela: values.valor_parcela ? parseCurrencyToNumber(values.valor_parcela) : null,
+    parcelas_atrasadas:
+      values.parcelas_atrasadas === "" ? null : values.parcelas_atrasadas === "sim",
+    banco: values.banco?.trim() || null,
+    mensagem: values.mensagem?.trim() || null,
+    origem,
+  };
+}
+
+export function toLeadDraftPayload(values: LeadDraftValues, origem: LeadOrigin = "form_autosave") {
+  return {
+    nome: values.nome?.trim() || null,
     whatsapp: values.whatsapp.trim(),
     tipo_contrato: values.tipo_contrato || null,
     valor_parcela: values.valor_parcela ? parseCurrencyToNumber(values.valor_parcela) : null,

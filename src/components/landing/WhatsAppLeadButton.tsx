@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useId, useState } from "react";
+import { createPortal } from "react-dom";
 import { Loader2, MessageCircle, X } from "lucide-react";
 import { defaultWhatsAppMessage, getWhatsAppHref } from "@/lib/whatsapp";
 import { trackEvent } from "@/lib/tracking";
@@ -75,8 +76,13 @@ export function WhatsAppLeadButton({
       }
     };
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [open]);
 
   function openModal() {
@@ -128,20 +134,9 @@ export function WhatsAppLeadButton({
     }
   }
 
-  return (
-    <>
-      <button
-        type="button"
-        onClick={openModal}
-        className={cn(baseButtonClass, variants[variant], className)}
-      >
-        {children}
-        {showIcon ? <MessageCircle size={16} aria-hidden /> : null}
-      </button>
-
-      {open ? (
+  const modal = open ? (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/70 px-4 py-6 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-zinc-950/70 px-4 py-6 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
@@ -220,7 +215,20 @@ export function WhatsAppLeadButton({
             </form>
           </div>
         </div>
-      ) : null}
+      ) : null;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={openModal}
+        className={cn(baseButtonClass, variants[variant], className)}
+      >
+        {children}
+        {showIcon ? <MessageCircle size={16} aria-hidden /> : null}
+      </button>
+
+      {modal ? createPortal(modal, document.body) : null}
     </>
   );
 }

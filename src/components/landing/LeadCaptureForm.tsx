@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Loader2, Send } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import {
   contractTypeOptions,
@@ -16,6 +16,10 @@ import { cn } from "@/lib/utils";
 
 const inputClass =
   "min-h-11 w-full rounded-md border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-red-400 focus:ring-4 focus:ring-red-100";
+
+function onlyDigits(value: string) {
+  return value.replace(/\D/g, "");
+}
 
 export function LeadCaptureForm() {
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -41,12 +45,75 @@ export function LeadCaptureForm() {
     },
   });
 
-  const [nome = "", whatsapp = ""] = useWatch({
-    control,
-    name: ["nome", "whatsapp"],
-  });
+  const watchedValues = useWatch({ control });
+  const nome = watchedValues.nome ?? "";
+  const whatsapp = watchedValues.whatsapp ?? "";
 
   const essentialFieldsFilled = nome.trim().length >= 2 && whatsapp.trim().length >= 10;
+
+  useEffect(() => {
+    if (isSuccess) {
+      return;
+    }
+
+    const phoneDigits = onlyDigits(watchedValues.whatsapp ?? "");
+
+    if (phoneDigits.length < 10) {
+      return;
+    }
+
+    const storageDate = new Date().toISOString().slice(0, 10);
+    const storageKey = `grs-form-autosave:${storageDate}:${phoneDigits}`;
+
+    if (window.localStorage.getItem(storageKey)) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const payload = {
+          nome: watchedValues.nome ?? "",
+          whatsapp: watchedValues.whatsapp ?? "",
+          tipo_contrato: watchedValues.tipo_contrato ?? "",
+          valor_parcela: watchedValues.valor_parcela ?? "",
+          parcelas_atrasadas: watchedValues.parcelas_atrasadas ?? "",
+          banco: watchedValues.banco ?? "",
+          mensagem: watchedValues.mensagem ?? "",
+          origem: "form_autosave",
+        };
+
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = (await response.json().catch(() => null)) as { ok?: boolean } | null;
+
+        if (response.ok && result?.ok === true) {
+          window.localStorage.setItem(storageKey, new Date().toISOString());
+          trackEvent("lead_form_autosave", {
+            has_nome: Boolean(payload.nome.trim()),
+            has_tipo_contrato: Boolean(payload.tipo_contrato),
+          });
+        }
+      } catch {
+        // Autosave is a silent safety net; the main form remains the primary conversion.
+      }
+    }, 1400);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [
+    isSuccess,
+    watchedValues.banco,
+    watchedValues.mensagem,
+    watchedValues.nome,
+    watchedValues.parcelas_atrasadas,
+    watchedValues.tipo_contrato,
+    watchedValues.valor_parcela,
+    watchedValues.whatsapp,
+  ]);
 
   async function onSubmit(values: LeadFormValues) {
     setFeedback(null);
@@ -160,7 +227,6 @@ export function LeadCaptureForm() {
               className={inputClass}
               placeholder="João"
               autoComplete="name"
-              autoFocus
             />
           </Field>
 
@@ -277,7 +343,7 @@ export function LeadCaptureForm() {
         <div className="mt-5 flex items-start gap-2 rounded-lg bg-zinc-50 px-3.5 py-3 text-xs leading-5 text-zinc-600">
           <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-red-100 text-[10px] font-bold text-red-600">✓</div>
           <span>
-            Seus dados são tratados com segurança conforme a <span className="font-semibold text-zinc-900">LGPD</span>. Você receberá orientação consultiva em até 1h.
+            Seus dados são tratados com segurança conforme a <span className="font-semibold text-zinc-900">LGPD</span>. Se informar o WhatsApp e sair antes de concluir, podemos registrar esse contato para continuidade do atendimento.
           </span>
         </div>
       </div>
