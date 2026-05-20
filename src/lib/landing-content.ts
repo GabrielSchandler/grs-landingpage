@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   CircleDollarSign,
   ClipboardCheck,
+  Clock,
   FileQuestion,
   FileSearch,
   FileText,
@@ -35,82 +36,96 @@ export const navItems = [
 ];
 
 export const heroCopy = {
-  title: "Você sente que paga muito, mas a dívida nunca diminui?",
+  title: "Seu banco pode estar cobrando mais do que você deveria pagar",
   subtitle:
-    "A GRS analisa contratos de financiamento para identificar possíveis juros abusivos, tarifas indevidas e cobranças acima dos parâmetros de mercado.",
+    "A GRS analisa tecnicamente seu contrato bancário e identifica juros acima do mercado, tarifas indevidas e cobranças que podem estar pesando no seu bolso há meses — sem que você saiba.",
   support:
-    "Muitos clientes só procuram ajuda quando a parcela já compromete o orçamento. Entender o contrato antes pode evitar um problema ainda maior.",
-  diagnosticTitle: "Diagnóstico técnico do contrato",
-  diagnosticText: "Taxa • CET • Parcelas • Histórico",
+    "Quando a dívida parece não diminuir mês após mês, o problema quase sempre está na estrutura do contrato. Você tem o direito de saber o que está pagando.",
+  diagnosticTitle: "Diagnóstico técnico completo",
+  diagnosticText: "Juros • CET • Tarifas • Cláusulas contratuais",
 };
 
 export const heroBadges = [
-  { label: "Atendimento consultivo", icon: HeartHandshake },
-  { label: "Análise individual", icon: FileSearch },
-  { label: "Sem promessa irresponsável", icon: ShieldCheck },
+  { label: "100% Gratuito", icon: HeartHandshake },
+  { label: "Sem compromisso", icon: ShieldCheck },
+  { label: "Retorno em até 24h", icon: Clock },
 ];
 
 export const heroIndicators = [
-  { title: "Atendimento humanizado", icon: HeartHandshake },
   { title: "Análise técnica especializada", icon: BadgeCheck },
-  { title: "Atendimento em todo Brasil", icon: MapPin },
+  { title: "Retorno em até 24 horas", icon: Clock },
+  { title: "Atendimento em todo o Brasil", icon: MapPin },
+];
+
+export const credibilityNumbers = [
+  { value: "100%", label: "Gratuito e sem compromisso" },
+  { value: "24h", label: "Prazo máximo de retorno" },
+  { value: "5+", label: "Modalidades de contrato" },
+  { value: "Brasil", label: "Atendimento nacional" },
 ];
 
 export const pains = [
   {
-    title: "Parcela cada vez mais pesada",
-    description: "Você paga mês após mês, mas sente que a dívida quase não diminui.",
+    title: "Parcela pesando no orçamento",
+    description:
+      "Você paga todo mês, mas o saldo devedor mal se move. A sensação é de que a dívida foi feita para não acabar.",
     icon: CircleDollarSign,
   },
   {
-    title: "Medo de atrasar",
-    description: "Qualquer imprevisto já começa a colocar o financiamento em risco.",
+    title: "Medo de atrasar e perder tudo",
+    description:
+      "Um atraso abre caminho para juros de mora, multa e negativação. Quando você precisa renegociar, o banco já tem toda a vantagem.",
     icon: AlertTriangle,
   },
   {
-    title: "Financiamento virou uma bola de neve",
-    description: "O valor total pago ao final parece muito maior do que o esperado.",
+    title: "Saldo devedor que não cai",
+    description:
+      "Meses pagando e o valor financiado praticamente não reduz. Isso pode indicar que algo no contrato está fora do esperado.",
     icon: TrendingUp,
   },
   {
-    title: "Pressão e cobranças",
-    description: "Atrasos aumentam ansiedade, cobranças e preocupação com o veículo.",
+    title: "Ameaça de busca e apreensão",
+    description:
+      "Cobranças constantes, negativação no CPF e risco de perder o bem. O banco sabe como pressionar — você precisa saber como se proteger.",
     icon: ShieldAlert,
   },
   {
-    title: "Dúvida sobre juros",
-    description: "Muitos clientes não sabem se a taxa contratada está dentro do padrão esperado.",
+    title: "Taxa de juros acima do mercado",
+    description:
+      "O contrato diz uma taxa. O que você paga na prática pode ser outra. Essa diferença, ao longo de anos, representa muito dinheiro.",
     icon: Search,
   },
   {
-    title: "Contrato difícil de entender",
-    description: "CET, tarifas, seguros e encargos deixam a leitura confusa.",
+    title: "Contrato impossível de entender",
+    description:
+      "CET, IOF, seguro prestamista, tarifas avulsas: cada linha representa um custo. Poucos sabem o que realmente estão pagando.",
     icon: FileQuestion,
   },
 ];
 
 export const processSteps = [
   {
-    title: "Você envia os dados principais",
+    title: "Você envia os dados do seu contrato",
     description:
-      "Coletamos informações básicas do financiamento, como parcela, banco, prazo, valores pagos e possíveis atrasos.",
+      "Pedimos apenas as informações essenciais: parcela atual, banco, tipo de contrato e situação de pagamento. Leva menos de 2 minutos.",
     icon: FileText,
   },
   {
-    title: "Analisamos o contrato com critério",
+    title: "Analisamos tecnicamente cada cláusula",
     description:
-      "Avaliamos juros, CET, tarifas, seguros, saldo devedor e comparação com parâmetros técnicos de mercado.",
+      "Examinamos juros, CET, tarifas e condições para identificar se há cobranças que fogem do padrão contratado ou do mercado.",
     icon: FileSearch,
   },
   {
-    title: "Identificamos possíveis pontos questionáveis",
-    description: "Verificamos se há indícios de cobranças excessivas, tarifas indevidas ou desequilíbrio contratual.",
+    title: "Identificamos os pontos críticos",
+    description:
+      "Apontamos com clareza onde seu contrato pode estar custando mais do que deveria — sem juridiquês e sem rodeios.",
     icon: ClipboardCheck,
   },
   {
-    title: "Orientamos o melhor caminho",
+    title: "Orientamos o próximo passo com segurança",
     description:
-      "Com base na análise, indicamos se faz sentido seguir com negociação, revisão ou acompanhamento especializado.",
+      "Você recebe uma orientação honesta: se vale questionar, como fazer e quais são os riscos. Sem pressão para contratar nada.",
     icon: MessageCircle,
   },
 ];
@@ -125,59 +140,59 @@ export const whyClients = [
 ];
 
 export const contracts = [
-  { title: "Financiamento de veículos", icon: Car },
-  { title: "Financiamento imobiliário", icon: Home },
-  { title: "Empréstimos pessoais", icon: HandCoins },
-  { title: "Consignados", icon: FileText },
-  { title: "Renegociações bancárias", icon: Building2 },
+  { title: "Financiamento de veículos", description: "Carros, motos e caminhões", icon: Car },
+  { title: "Financiamento imobiliário", description: "Casa própria e terrenos", icon: Home },
+  { title: "Empréstimos pessoais", description: "Crédito pessoal e CDC", icon: HandCoins },
+  { title: "Consignados", description: "Desconto direto em folha", icon: FileText },
+  { title: "Renegociações bancárias", description: "Acordos e parcelamentos", icon: Building2 },
 ];
 
 export const authorityCards = [
   {
-    title: "Análise técnica",
-    text: "Leitura criteriosa de juros, CET, tarifas, parcelas e histórico do contrato.",
+    title: "Análise técnica completa",
+    text: "Leitura detalhada de taxas, encargos, tarifas e condições que podem desequilibrar o contrato em relação ao que foi acordado.",
     icon: FileSearch,
   },
   {
-    title: "Respeito à LGPD",
-    text: "Dados tratados com cuidado e usados para diagnóstico e contato consultivo.",
+    title: "Proteção de dados (LGPD)",
+    text: "Suas informações são utilizadas exclusivamente para diagnóstico e atendimento, com total conformidade à legislação de privacidade.",
     icon: LockKeyhole,
   },
   {
-    title: "Atendimento especializado",
-    text: "Orientação simples, direta e responsável para cada situação.",
+    title: "Especialistas dedicados",
+    text: "Cada caso é analisado por um especialista que explica o que foi encontrado de forma clara e sem termos técnicos desnecessários.",
     icon: Users,
   },
   {
-    title: "Acompanhamento consultivo",
-    text: "Você entende o cenário antes de tomar qualquer decisão sobre o contrato.",
+    title: "Orientação sem pressão",
+    text: "Você recebe os próximos passos e decide com segurança — sem urgência artificial e sem oferta forçada.",
     icon: Scale,
   },
 ];
 
 export const authorityBullets = [
-  "Análise individual do contrato",
-  "Linguagem simples e objetiva",
-  "Orientação segura e responsável",
-  "Atendimento consultivo",
-  "Tratamento adequado dos dados",
-  "Sem promessa de resultado garantido",
+  "Análise técnica do contrato completo",
+  "Linguagem simples, sem juridiquês",
+  "Orientação responsável a cada caso",
+  "Atendimento dedicado ao seu perfil",
+  "Dados protegidos conforme LGPD",
+  "Diagnóstico honesto, sem expectativas infladas",
 ];
 
 export const leadCards = [
   {
-    title: "Sem compromisso",
-    text: "Você entende se há sinais de alerta antes de tomar qualquer decisão.",
+    title: "100% Gratuito e sem compromisso",
+    text: "Sem taxa de análise, sem cadastro em sistema de crédito, sem obrigação de contratar qualquer serviço.",
     icon: CheckCircle2,
   },
   {
-    title: "Diagnóstico inicial",
-    text: "Avaliamos os principais dados do contrato e da parcela.",
+    title: "Retorno em até 24 horas",
+    text: "Nossa equipe analisa seu caso e entra em contato pelo WhatsApp para explicar o que foi encontrado.",
     icon: FileSearch,
   },
   {
-    title: "Atendimento humano",
-    text: "Um especialista conversa com você para entender o cenário.",
+    title: "Atendimento humano e personalizado",
+    text: "Cada contrato é diferente. Você recebe uma orientação específica para a sua situação, não uma resposta genérica.",
     icon: PhoneCall,
   },
 ];
@@ -192,25 +207,25 @@ export const testimonials = [
     rating: 5,
   },
   {
-    title: "Não me senti pressionada",
+    title: "Não me senti pressionada em nenhum momento",
     quote:
-      "Eu tinha receio de chamar e já tentarem vender alguma coisa. Foi diferente: primeiro ouviram meu caso, olharam as informações e explicaram com calma.",
+      "Eu tinha receio de chamar e já tentarem vender alguma coisa. Foi diferente: primeiro ouviram meu caso, olharam as informações e explicaram com calma o que tinha no meu contrato.",
     author: "Luciana",
     location: "Guarulhos, SP",
     rating: 5,
   },
   {
-    title: "Consegui enxergar melhor a parcela",
+    title: "Pela primeira vez entendi o que eu pagava",
     quote:
-      "Eu só olhava o valor que caía todo mês e ficava achando que não saía do lugar. A conversa ajudou a separar parcela, taxa, prazo e o que precisava conferir.",
+      "Eu só via a parcela cair todo mês e ficava achando que não saía do lugar. A análise separou parcela, taxa, prazo e me mostrou exatamente o que estava sendo cobrado. Foi a primeira vez que entendi de verdade.",
     author: "Renato",
     location: "Osasco, SP",
     rating: 5,
   },
   {
-    title: "Falaram de um jeito normal",
+    title: "Explicaram no português do dia a dia",
     quote:
-      "Eu não entendo esses termos de banco. O que gostei é que não ficaram usando palavra difícil para parecer bonito. Explicaram no português do dia a dia.",
+      "Eu não entendo esses termos de banco. O que gostei é que não ficaram usando palavra difícil para parecer importante. Explicaram tudo de forma simples, como se fosse uma conversa normal.",
     author: "Patrícia",
     location: "Contagem, MG",
     rating: 5,
@@ -218,15 +233,15 @@ export const testimonials = [
   {
     title: "Eu estava com parcela atrasada",
     quote:
-      "Achei que iam me julgar por estar atrasado, mas o atendimento foi bem respeitoso. Saí com mais noção do que precisava organizar e enviar.",
+      "Achei que iam me julgar por estar em atraso, mas o atendimento foi muito respeitoso. Saí com mais clareza do que precisava organizar e como proceder a partir daí.",
     author: "Diego",
     location: "São José dos Pinhais, PR",
     rating: 5,
   },
   {
-    title: "Foi bem direto, sem promessa",
+    title: "Direto ao ponto, sem promessa",
     quote:
-      "Gostei justamente porque não prometeram nada de cara. Pediram as informações, explicaram o que dava para avaliar e foram honestos sobre depender do contrato.",
+      "Gostei justamente porque não prometeram nada de cara. Pediram as informações, analisaram com cuidado e foram honestos sobre o que dependia do meu contrato. Isso me deu mais confiança.",
     author: "Aline",
     location: "Lauro de Freitas, BA",
     rating: 5,
@@ -234,16 +249,26 @@ export const testimonials = [
 ];
 
 export const socialProofStats = [
-  { title: "Orientação clara", text: "sem juridiquês desnecessário", icon: Sparkles },
-  { title: "Avaliação individual", text: "cada contrato é lido no seu contexto", icon: FileSearch },
-  { title: "Atendimento consultivo", text: "sem pressão e sem promessa vazia", icon: Star },
+  { title: "Linguagem simples e direta", text: "sem juridiquês ou termos técnicos desnecessários", icon: Sparkles },
+  { title: "Análise individualizada", text: "cada contrato lido no contexto específico do cliente", icon: FileSearch },
+  { title: "Atendimento sem pressão", text: "orientação honesta, sem oferta forçada e sem promessa vazia", icon: Star },
 ];
 
 export const faqs = [
   {
+    question: "A análise é realmente gratuita?",
+    answer:
+      "Sim. O diagnóstico inicial é 100% gratuito e sem compromisso. Não há taxa de avaliação, consulta paga ou contratação obrigatória. Nossa equipe analisa as informações e orienta o próximo passo sem nenhum custo.",
+  },
+  {
+    question: "Em quanto tempo recebo o retorno?",
+    answer:
+      "Nossa equipe busca retornar em até 24 horas úteis após o envio dos dados. Em casos que exigem análise mais detalhada ou documentação adicional, o prazo pode ser um pouco maior — e você será avisado.",
+  },
+  {
     question: "A análise garante redução da parcela?",
     answer:
-      "Não. A análise serve para identificar se existem indícios técnicos de cobrança questionável. Qualquer possibilidade de redução depende do contrato, do histórico de pagamento e da estratégia adequada para o caso.",
+      "Não. A análise serve para identificar se existem indícios técnicos de cobrança questionável. Qualquer possibilidade de redução depende do contrato, do histórico de pagamento e da estratégia adequada para cada caso.",
   },
   {
     question: "Revisão de juros é calote?",
@@ -254,6 +279,11 @@ export const faqs = [
     question: "Posso analisar contrato com parcelas atrasadas?",
     answer:
       "Sim. Contratos com atraso podem exigir uma avaliação ainda mais cuidadosa, principalmente quando há cobrança, negativação ou risco de busca e apreensão.",
+  },
+  {
+    question: "Precisam ser contratos de um banco específico?",
+    answer:
+      "Não. Analisamos contratos de qualquer banco, financeira ou instituição de crédito que opera no Brasil — Itaú, Caixa, Bradesco, Santander, financeiras de veículos e outras.",
   },
   {
     question: "Quais documentos preciso enviar?",
