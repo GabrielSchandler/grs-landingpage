@@ -35,6 +35,11 @@ export const navItems = [
   { href: "#faq", label: "Dúvidas frequentes" },
 ];
 
+export const footerLegalLinks = [
+  { href: "/politica-de-privacidade", label: "Política de Privacidade" },
+  { href: "/termos-de-uso", label: "Termos de Uso" },
+];
+
 export const heroCopy = {
   title: "Seu banco pode estar cobrando mais do que você deveria pagar",
   subtitle:
