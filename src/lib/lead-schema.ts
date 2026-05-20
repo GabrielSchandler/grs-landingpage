@@ -61,14 +61,19 @@ export const leadSchema = z.object({
   valor_parcela: z
     .string()
     .trim()
-    .min(1, "Informe o valor aproximado da parcela.")
+    .optional()
     .refine((value) => {
+      if (!value) return true;
       const parsed = parseCurrencyToNumber(value);
       return Number.isFinite(parsed) && parsed > 0;
     }, "Informe um valor de parcela válido."),
   parcelas_atrasadas: z
     .string()
-    .refine((value) => value === "sim" || value === "nao", "Informe se há parcelas atrasadas."),
+    .optional()
+    .refine(
+      (value) => !value || value === "sim" || value === "nao",
+      "Informe se há parcelas atrasadas."
+    ),
   banco: z.string().trim().optional(),
   mensagem: z.string().trim().max(1000, "Use até 1000 caracteres.").optional(),
 });
@@ -81,10 +86,17 @@ export function toLeadPayload(values: LeadFormValues) {
     nome: values.nome.trim(),
     whatsapp: values.whatsapp.trim(),
     tipo_contrato: values.tipo_contrato,
-    valor_parcela: parseCurrencyToNumber(values.valor_parcela),
-    parcelas_atrasadas: values.parcelas_atrasadas === "sim",
+    valor_parcela: values.valor_parcela ? parseCurrencyToNumber(values.valor_parcela) : null,
+    parcelas_atrasadas:
+      values.parcelas_atrasadas === "sim"
+        ? true
+        : values.parcelas_atrasadas === "nao"
+          ? false
+          : null,
     banco: values.banco?.trim() || null,
     mensagem: values.mensagem?.trim() || null,
     origem: "landing_page",
+    ab_variant:
+      typeof window !== "undefined" ? localStorage.getItem("grs_form_variant") : null,
   };
 }

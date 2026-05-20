@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Loader2, Send } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   contractTypeOptions,
@@ -13,7 +13,8 @@ import {
 } from "@/lib/lead-schema";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { getWhatsAppHref } from "@/lib/whatsapp";
-import { trackEvent } from "@/lib/tracking";
+import { trackEvent, trackEventWithVariant } from "@/lib/tracking";
+import { type FormVariant, getFormVariant } from "@/lib/ab-test";
 import { cn } from "@/lib/utils";
 
 const inputClass =
@@ -22,6 +23,13 @@ const inputClass =
 export function LeadCaptureForm() {
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [variant, setVariant] = useState<FormVariant>("long");
+
+  useEffect(() => {
+    const v = getFormVariant();
+    setVariant(v);
+    trackEvent("ab_test_assignment", { test: "form_length", variant: v });
+  }, []);
 
   const {
     register,
@@ -50,17 +58,19 @@ export function LeadCaptureForm() {
   const parcelasAtrasadas = watch("parcelas_atrasadas");
 
   const essentialFieldsFilled =
-    nome.trim().length >= 3 &&
-    whatsapp.trim().length >= 10 &&
-    tipoContrato &&
-    valorParcela.trim().length > 0 &&
-    parcelasAtrasadas;
+    variant === "short"
+      ? nome.trim().length >= 3 && whatsapp.trim().length >= 10 && Boolean(tipoContrato)
+      : nome.trim().length >= 3 &&
+        whatsapp.trim().length >= 10 &&
+        Boolean(tipoContrato) &&
+        (valorParcela ?? "").trim().length > 0 &&
+        Boolean(parcelasAtrasadas);
 
   async function onSubmit(values: LeadFormValues) {
     setFeedback(null);
 
     try {
-      trackEvent("lead_form_submit", {
+      trackEventWithVariant("lead_form_submit", {
         tipo_contrato: values.tipo_contrato,
         valor_parcela: values.valor_parcela,
       });
@@ -77,7 +87,7 @@ export function LeadCaptureForm() {
         window.location.href = "/obrigado";
       }, 1500);
     } catch (error) {
-      trackEvent("lead_form_error", {
+      trackEventWithVariant("lead_form_error", {
         error: error instanceof Error ? error.message : "unknown",
       });
 
@@ -143,7 +153,6 @@ export function LeadCaptureForm() {
           </span>
         </div>
 
-        {/* All fields visible */}
         <div className="grid gap-4">
           <Field label="Seu nome completo" error={errors.nome?.message}>
             <input
@@ -165,67 +174,73 @@ export function LeadCaptureForm() {
             />
           </Field>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Tipo de contrato" error={errors.tipo_contrato?.message}>
-              <select {...register("tipo_contrato")} className={cn(inputClass, "appearance-none")}>
-                <option value="">Selecione o tipo</option>
-                {contractTypeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </Field>
-
-            <Field label="Valor da parcela" error={errors.valor_parcela?.message}>
-              <input
-                {...register("valor_parcela")}
-                className={inputClass}
-                placeholder="R$ 1.250,00"
-                inputMode="decimal"
-              />
-            </Field>
-          </div>
-
-          <Field label="Está com parcelas atrasadas?" error={errors.parcelas_atrasadas?.message}>
-            <div className="flex gap-3">
-              {[
-                { value: "nao", label: "Não" },
-                { value: "sim", label: "Sim" },
-              ].map((option) => (
-                <label key={option.value} className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="radio"
-                    {...register("parcelas_atrasadas")}
-                    value={option.value}
-                    className="size-4 cursor-pointer accent-red-600"
-                  />
-                  <span className="text-sm font-medium text-zinc-700">{option.label}</span>
-                </label>
+          {/* Tipo de contrato — sempre visível */}
+          <Field label="Tipo de contrato" error={errors.tipo_contrato?.message}>
+            <select {...register("tipo_contrato")} className={cn(inputClass, "appearance-none")}>
+              <option value="">Selecione o tipo</option>
+              {contractTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
               ))}
-            </div>
+            </select>
           </Field>
 
-          {/* Optional fields — always visible, clearly labeled */}
-          <div className="space-y-4 rounded-lg border border-zinc-100 bg-zinc-50/60 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">Informações adicionais (opcional)</p>
+          {/* Campos extras — apenas variante long */}
+          {variant === "long" && (
+            <>
+              <Field label="Valor da parcela" error={errors.valor_parcela?.message}>
+                <input
+                  {...register("valor_parcela")}
+                  className={inputClass}
+                  placeholder="R$ 1.250,00"
+                  inputMode="decimal"
+                />
+              </Field>
 
-            <Field label="Banco ou financeira" error={errors.banco?.message}>
-              <input
-                {...register("banco")}
-                className={inputClass}
-                placeholder="Itaú, Caixa, Bradesco..."
-              />
-            </Field>
+              <Field label="Está com parcelas atrasadas?" error={errors.parcelas_atrasadas?.message}>
+                <div className="flex gap-3">
+                  {[
+                    { value: "nao", label: "Não" },
+                    { value: "sim", label: "Sim" },
+                  ].map((option) => (
+                    <label key={option.value} className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        {...register("parcelas_atrasadas")}
+                        value={option.value}
+                        className="size-4 cursor-pointer accent-red-600"
+                      />
+                      <span className="text-sm font-medium text-zinc-700">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </Field>
+            </>
+          )}
 
-            <Field label="Conte brevemente seu caso" error={errors.mensagem?.message}>
-              <textarea
-                {...register("mensagem")}
-                className={cn(inputClass, "min-h-20 resize-y")}
-                placeholder="Ex: Financiei um carro por 60 meses e acho que estou pagando muita taxa."
-              />
-            </Field>
-          </div>
+          {/* Informações opcionais — apenas variante long */}
+          {variant === "long" && (
+            <div className="space-y-4 rounded-lg border border-zinc-100 bg-zinc-50/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">Informações adicionais (opcional)</p>
+
+              <Field label="Banco ou financeira" error={errors.banco?.message}>
+                <input
+                  {...register("banco")}
+                  className={inputClass}
+                  placeholder="Itaú, Caixa, Bradesco..."
+                />
+              </Field>
+
+              <Field label="Conte brevemente seu caso" error={errors.mensagem?.message}>
+                <textarea
+                  {...register("mensagem")}
+                  className={cn(inputClass, "min-h-20 resize-y")}
+                  placeholder="Ex: Financiei um carro por 60 meses e acho que estou pagando muita taxa."
+                />
+              </Field>
+            </div>
+          )}
         </div>
 
         {feedback ? (
@@ -260,7 +275,7 @@ export function LeadCaptureForm() {
           ) : (
             <>
               <Send className="size-4" aria-hidden />
-              Quero minha análise gratuita
+              Quero descobrir o que estou pagando a mais
             </>
           )}
         </button>
