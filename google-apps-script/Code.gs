@@ -39,7 +39,7 @@ function doPost(e) {
       lead.whatsapp || "",
       lead.tipo_contrato || "",
       lead.valor_parcela || "",
-      lead.parcelas_atrasadas === true ? "Sim" : "Não",
+      formatBoolean(lead.parcelas_atrasadas),
       lead.banco || "",
       lead.mensagem || "",
       lead.origem || "landing_page",
@@ -53,6 +53,18 @@ function doPost(e) {
       error: error && error.message ? error.message : String(error),
     });
   }
+}
+
+function formatBoolean(value) {
+  if (value === true) {
+    return "Sim";
+  }
+
+  if (value === false) {
+    return "Não";
+  }
+
+  return "";
 }
 
 function getOrCreateSheet(spreadsheet, sheetName) {

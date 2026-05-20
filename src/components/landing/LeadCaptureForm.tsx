@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Loader2, Send } from "lucide-react";
+import { Check, Loader2, MessageCircle, Send } from "lucide-react";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import {
@@ -10,6 +10,7 @@ import {
   type LeadFormInput,
   type LeadFormValues,
 } from "@/lib/lead-schema";
+import { getWhatsAppHref } from "@/lib/whatsapp";
 import { trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,9 @@ const inputClass =
 export function LeadCaptureForm() {
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const whatsAppHref = getWhatsAppHref(
+    "Olá, vim pela landing page da GRS e prefiro falar direto pelo WhatsApp sobre meu contrato.",
+  );
 
   const {
     register,
@@ -40,17 +44,18 @@ export function LeadCaptureForm() {
     },
   });
 
-  const [nome = "", whatsapp = "", tipoContrato = "", valorParcela = "", parcelasAtrasadas = ""] = useWatch({
+  const [nome = "", whatsapp = ""] = useWatch({
     control,
-    name: ["nome", "whatsapp", "tipo_contrato", "valor_parcela", "parcelas_atrasadas"],
+    name: ["nome", "whatsapp"],
   });
 
-  const essentialFieldsFilled =
-    nome.trim().length >= 3 &&
-    whatsapp.trim().length >= 10 &&
-    tipoContrato &&
-    valorParcela.trim().length > 0 &&
-    parcelasAtrasadas;
+  const essentialFieldsFilled = nome.trim().length >= 2 && whatsapp.trim().length >= 10;
+
+  function handleWhatsAppClick() {
+    trackEvent("whatsapp_click", {
+      placement: "lead_form_direct_button",
+    });
+  }
 
   async function onSubmit(values: LeadFormValues) {
     setFeedback(null);
@@ -128,9 +133,20 @@ export function LeadCaptureForm() {
             Descubra se seu banco está cobrando mais do que pode
           </h3>
           <p className="mt-2 text-sm leading-6 text-zinc-600">
-            Preencha os dados do seu contrato em menos de 2 minutos e nossa equipe retorna com uma avaliação técnica completa.
+            Informe seu nome e WhatsApp para a equipe iniciar o contato. Se quiser, adicione detalhes do contrato para agilizar a análise.
           </p>
         </div>
+
+        <a
+          href={whatsAppHref}
+          onClick={handleWhatsAppClick}
+          target={whatsAppHref.startsWith("http") ? "_blank" : undefined}
+          rel={whatsAppHref.startsWith("http") ? "noopener noreferrer" : undefined}
+          className="mb-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
+        >
+          <MessageCircle className="size-4" aria-hidden />
+          Prefiro falar direto pelo WhatsApp
+        </a>
 
         {/* Badges */}
         <div className="mb-6 flex flex-wrap gap-2">
@@ -150,11 +166,11 @@ export function LeadCaptureForm() {
 
         {/* All fields visible */}
         <div className="grid gap-4">
-          <Field label="Seu nome completo" error={errors.nome?.message}>
+          <Field label="Seu nome" error={errors.nome?.message}>
             <input
               {...register("nome")}
               className={inputClass}
-              placeholder="João da Silva"
+              placeholder="João"
               autoComplete="name"
               autoFocus
             />
@@ -171,7 +187,7 @@ export function LeadCaptureForm() {
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Tipo de contrato" error={errors.tipo_contrato?.message}>
+            <Field label="Tipo de contrato (opcional)" error={errors.tipo_contrato?.message}>
               <select {...register("tipo_contrato")} className={cn(inputClass, "appearance-none")}>
                 <option value="">Selecione o tipo</option>
                 {contractTypeOptions.map((option) => (
@@ -182,7 +198,7 @@ export function LeadCaptureForm() {
               </select>
             </Field>
 
-            <Field label="Valor da parcela" error={errors.valor_parcela?.message}>
+            <Field label="Valor da parcela (opcional)" error={errors.valor_parcela?.message}>
               <input
                 {...register("valor_parcela")}
                 className={inputClass}
@@ -192,7 +208,7 @@ export function LeadCaptureForm() {
             </Field>
           </div>
 
-          <Field label="Está com parcelas atrasadas?" error={errors.parcelas_atrasadas?.message}>
+          <Field label="Está com parcelas atrasadas? (opcional)" error={errors.parcelas_atrasadas?.message}>
             <div className="flex gap-3">
               {[
                 { value: "nao", label: "Não" },

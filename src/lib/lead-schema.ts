@@ -43,10 +43,7 @@ export const leadSchema = z.object({
   nome: z
     .string()
     .trim()
-    .min(3, "Informe seu nome completo.")
-    .refine((value) => value.includes(" "), {
-      message: "Informe nome e sobrenome.",
-    }),
+    .min(2, "Informe seu nome."),
   whatsapp: z
     .string()
     .trim()
@@ -54,21 +51,33 @@ export const leadSchema = z.object({
     .refine((value) => phoneDigitCount(value) >= 10, {
       message: "Informe um WhatsApp válido com DDD.",
     }),
-  tipo_contrato: z.string().refine(
-    (value) => contractTypeValues.includes(value as (typeof contractTypeValues)[number]),
-    "Selecione o tipo de contrato.",
-  ),
+  tipo_contrato: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value === "" || contractTypeValues.includes(value as (typeof contractTypeValues)[number]),
+      "Selecione um tipo de contrato válido.",
+    )
+    .optional()
+    .default(""),
   valor_parcela: z
     .string()
     .trim()
-    .min(1, "Informe o valor aproximado da parcela.")
     .refine((value) => {
+      if (!value) {
+        return true;
+      }
+
       const parsed = parseCurrencyToNumber(value);
       return Number.isFinite(parsed) && parsed > 0;
-    }, "Informe um valor de parcela válido."),
+    }, "Informe um valor de parcela válido.")
+    .optional()
+    .default(""),
   parcelas_atrasadas: z
     .string()
-    .refine((value) => value === "sim" || value === "nao", "Informe se há parcelas atrasadas."),
+    .refine((value) => value === "" || value === "sim" || value === "nao", "Informe uma opção válida.")
+    .optional()
+    .default(""),
   banco: z.string().trim().optional(),
   mensagem: z.string().trim().max(1000, "Use até 1000 caracteres.").optional(),
 });
@@ -80,9 +89,10 @@ export function toLeadPayload(values: LeadFormValues) {
   return {
     nome: values.nome.trim(),
     whatsapp: values.whatsapp.trim(),
-    tipo_contrato: values.tipo_contrato,
-    valor_parcela: parseCurrencyToNumber(values.valor_parcela),
-    parcelas_atrasadas: values.parcelas_atrasadas === "sim",
+    tipo_contrato: values.tipo_contrato || null,
+    valor_parcela: values.valor_parcela ? parseCurrencyToNumber(values.valor_parcela) : null,
+    parcelas_atrasadas:
+      values.parcelas_atrasadas === "" ? null : values.parcelas_atrasadas === "sim",
     banco: values.banco?.trim() || null,
     mensagem: values.mensagem?.trim() || null,
     origem: "landing_page",
