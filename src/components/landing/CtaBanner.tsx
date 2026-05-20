@@ -56,7 +56,7 @@ export function CtaBanner() {
             <span className="hidden size-1 rounded-full bg-red-300 sm:block" aria-hidden />
             <span className="flex items-center gap-2">
               <Clock className="size-4" aria-hidden />
-              Retorno em até 24h
+              Retorno em até 1h
             </span>
             <span className="hidden size-1 rounded-full bg-red-300 sm:block" aria-hidden />
             <span className="flex items-center gap-2">

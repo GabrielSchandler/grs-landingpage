@@ -42,7 +42,7 @@ export default function ThanksPage() {
               {
                 icon: Clock,
                 title: "Tempo de retorno",
-                description: "Resposta em até 24 horas",
+                description: "Resposta em até 1 hora",
               },
               {
                 icon: CheckCircle2,

@@ -48,18 +48,18 @@ export const heroCopy = {
 export const heroBadges = [
   { label: "100% Gratuito", icon: HeartHandshake },
   { label: "Sem compromisso", icon: ShieldCheck },
-  { label: "Retorno em até 24h", icon: Clock },
+  { label: "Retorno em até 1h", icon: Clock },
 ];
 
 export const heroIndicators = [
   { title: "Análise técnica especializada", icon: BadgeCheck },
-  { title: "Retorno em até 24 horas", icon: Clock },
+  { title: "Retorno em até 1h", icon: Clock },
   { title: "Atendimento em todo o Brasil", icon: MapPin },
 ];
 
 export const credibilityNumbers = [
   { value: "100%", label: "Gratuito e sem compromisso" },
-  { value: "24h", label: "Prazo máximo de retorno" },
+  { value: "1h", label: "Prazo máximo de retorno" },
   { value: "5+", label: "Modalidades de contrato" },
   { value: "Brasil", label: "Atendimento nacional" },
 ];

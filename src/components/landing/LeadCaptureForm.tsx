@@ -139,7 +139,7 @@ export function LeadCaptureForm() {
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
             <span className="size-2 rounded-full bg-amber-600" aria-hidden />
-            Retorno em até 24h
+            Retorno em até 1h
           </span>
         </div>
 
@@ -268,7 +268,7 @@ export function LeadCaptureForm() {
         <div className="mt-5 flex items-start gap-2 rounded-lg bg-zinc-50 px-3.5 py-3 text-xs leading-5 text-zinc-600">
           <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-red-100 text-[10px] font-bold text-red-600">✓</div>
           <span>
-            Seus dados são tratados com segurança conforme a <span className="font-semibold text-zinc-900">LGPD</span>. Você receberá orientação consultiva em até 24h.
+            Seus dados são tratados com segurança conforme a <span className="font-semibold text-zinc-900">LGPD</span>. Você receberá orientação consultiva em até 1h.
           </span>
         </div>
       </div>
