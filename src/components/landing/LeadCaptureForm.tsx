@@ -15,6 +15,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { getWhatsAppHref } from "@/lib/whatsapp";
 import { trackEvent, trackEventWithVariant } from "@/lib/tracking";
 import { type FormVariant, getFormVariant } from "@/lib/ab-test";
+import { maskPhone } from "@/lib/masks";
 import { cn } from "@/lib/utils";
 
 const inputClass =
@@ -171,6 +172,10 @@ export function LeadCaptureForm() {
               placeholder="(11) 98765-4321"
               autoComplete="tel"
               inputMode="tel"
+              onChange={(e) => {
+                e.target.value = maskPhone(e.target.value);
+                register("whatsapp").onChange(e);
+              }}
             />
           </Field>
 

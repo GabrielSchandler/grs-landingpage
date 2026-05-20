@@ -14,14 +14,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GRS Soluções | Análise de contratos bancários",
+  metadataBase: new URL("https://grs-landingpage.vercel.app"),
+  title: "GRS Solução | Análise Gratuita de Contratos Bancários",
   description:
-    "Análise técnica de contratos bancários para identificar possíveis juros abusivos, tarifas indevidas ou cobranças questionáveis.",
+    "Análise técnica gratuita de contratos bancários para identificar juros acima do mercado, tarifas indevidas e cobranças questionáveis. Retorno em até 1h em horário comercial.",
+  keywords: [
+    "análise de contrato bancário",
+    "revisão de financiamento",
+    "juros abusivos",
+    "análise de financiamento de veículo",
+    "revisão de contrato",
+    "tarifas indevidas",
+    "análise técnica contrato",
+    "GRS Solução",
+  ],
+  robots: { index: true, follow: true },
   openGraph: {
-    title: "GRS Soluções | Análise de contratos bancários",
+    title: "GRS Solução | Análise Gratuita de Contratos Bancários",
     description:
-      "Entenda se seu financiamento pode estar custando mais do que deveria com uma análise técnica e responsável.",
+      "Descubra se seu banco está cobrando mais do que deveria. Análise técnica gratuita, retorno em até 1h em horário comercial.",
     type: "website",
+    images: [{ url: "/logo-grs.jpeg", width: 1080, height: 760, alt: "GRS Solução" }],
   },
 };
 
