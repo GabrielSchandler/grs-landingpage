@@ -1,16 +1,10 @@
-import { MessageCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ButtonLink } from "@/components/ui/ButtonLink";
 import { LeadCaptureForm } from "@/components/landing/LeadCaptureForm";
+import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
 import { leadCards } from "@/lib/landing-content";
-import { getWhatsAppHref } from "@/lib/whatsapp";
 
 export function LeadSection() {
-  const whatsAppHref = getWhatsAppHref(
-    "Olá, vim pela landing page da GRS e gostaria de falar com um especialista sobre meu contrato.",
-  );
-
   return (
     <section id="lead-form" className="relative overflow-hidden bg-zinc-950 py-16 sm:py-24">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_14%,rgba(227,6,19,0.14),transparent_28%),radial-gradient(circle_at_10%_80%,rgba(227,6,19,0.08),transparent_28%)]" aria-hidden />
@@ -48,16 +42,13 @@ export function LeadSection() {
               <p className="mt-2 text-sm leading-6 text-emerald-50/80">
                 Você também pode chamar direto no WhatsApp e enviar as informações do contrato por lá.
               </p>
-              <ButtonLink
-                href={whatsAppHref}
-                target={whatsAppHref.startsWith("http") ? "_blank" : undefined}
-                rel={whatsAppHref.startsWith("http") ? "noopener noreferrer" : undefined}
+              <WhatsAppLeadButton
                 variant="secondary"
                 className="mt-4 w-full border-emerald-200 bg-white text-emerald-800 hover:border-emerald-300 hover:bg-emerald-50 sm:w-auto"
-                icon={<MessageCircle size={16} aria-hidden />}
+                placement="lead_section_box"
               >
                 Chamar no WhatsApp
-              </ButtonLink>
+              </WhatsAppLeadButton>
             </div>
           </div>
 

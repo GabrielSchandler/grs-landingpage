@@ -1,13 +1,11 @@
 import Image from "next/image";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
-import { getWhatsAppHref } from "@/lib/whatsapp";
+import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
 import { credibilityNumbers, heroBadges, heroCopy, heroIndicators } from "@/lib/landing-content";
 
 export function Hero() {
-  const whatsAppHref = getWhatsAppHref();
-
   return (
     <section className="relative isolate overflow-hidden bg-zinc-950">
       {/* Background gradients */}
@@ -36,16 +34,13 @@ export function Hero() {
             <ButtonLink href="#lead-form" className="btn-pulse min-h-14 px-7 text-base" icon={<ArrowRight size={18} aria-hidden />}>
               Solicitar análise gratuita
             </ButtonLink>
-            <ButtonLink
-              href={whatsAppHref}
-              icon={<MessageCircle size={18} aria-hidden />}
-              rel="noopener noreferrer"
-              target={whatsAppHref.startsWith("http") ? "_blank" : undefined}
+            <WhatsAppLeadButton
               variant="dark-outline"
               className="min-h-14 px-7 text-base"
+              placement="hero_secondary"
             >
               Falar com especialista
-            </ButtonLink>
+            </WhatsAppLeadButton>
           </div>
 
           <div className="mt-8 grid gap-2 text-sm sm:grid-cols-3">

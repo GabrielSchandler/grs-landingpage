@@ -2,6 +2,7 @@ export type TrackingEvent =
   | "lead_form_submit"
   | "lead_form_error"
   | "whatsapp_click"
+  | "whatsapp_lead_submit"
   | "simulator_submit"
   | "cta_click";
 

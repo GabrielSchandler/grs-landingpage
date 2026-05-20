@@ -1,11 +1,9 @@
-import { ArrowRight, Clock, MessageCircle, ShieldCheck } from "lucide-react";
+import { ArrowRight, Clock, ShieldCheck } from "lucide-react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
-import { getWhatsAppHref } from "@/lib/whatsapp";
+import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
 
 export function CtaBanner() {
-  const whatsAppHref = getWhatsAppHref();
-
   return (
     <section className="relative overflow-hidden bg-[#e30613] py-16 sm:py-20">
       {/* Subtle texture */}
@@ -35,16 +33,13 @@ export function CtaBanner() {
             >
               Solicitar análise gratuita
             </ButtonLink>
-            <ButtonLink
-              href={whatsAppHref}
-              target={whatsAppHref.startsWith("http") ? "_blank" : undefined}
-              rel="noopener noreferrer"
+            <WhatsAppLeadButton
               variant="dark-outline"
               className="min-h-14 px-8 text-base"
-              icon={<MessageCircle size={18} aria-hidden />}
+              placement="cta_banner"
             >
               Falar no WhatsApp
-            </ButtonLink>
+            </WhatsAppLeadButton>
           </div>
 
           {/* Trust strip */}

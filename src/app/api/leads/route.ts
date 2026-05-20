@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { leadSchema, toLeadPayload } from "@/lib/lead-schema";
+import { leadSchema, toLeadPayload, type LeadOrigin } from "@/lib/lead-schema";
 
 export const runtime = "nodejs";
 
@@ -30,7 +30,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const lead = toLeadPayload(parsed.data);
+    const origem: LeadOrigin = body?.origem === "whatsapp_popup" ? "whatsapp_popup" : "landing_page";
+    const lead = toLeadPayload(parsed.data, origem);
     const submittedAt = new Date().toISOString();
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);

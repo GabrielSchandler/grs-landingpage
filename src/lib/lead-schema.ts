@@ -84,8 +84,9 @@ export const leadSchema = z.object({
 
 export type LeadFormInput = z.input<typeof leadSchema>;
 export type LeadFormValues = z.output<typeof leadSchema>;
+export type LeadOrigin = "landing_page" | "whatsapp_popup";
 
-export function toLeadPayload(values: LeadFormValues) {
+export function toLeadPayload(values: LeadFormValues, origem: LeadOrigin = "landing_page") {
   return {
     nome: values.nome.trim(),
     whatsapp: values.whatsapp.trim(),
@@ -95,6 +96,6 @@ export function toLeadPayload(values: LeadFormValues) {
       values.parcelas_atrasadas === "" ? null : values.parcelas_atrasadas === "sim",
     banco: values.banco?.trim() || null,
     mensagem: values.mensagem?.trim() || null,
-    origem: "landing_page",
+    origem,
   };
 }

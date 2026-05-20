@@ -1,12 +1,11 @@
 export const defaultWhatsAppMessage =
-  "Olá, gostaria de solicitar uma análise do meu contrato com a GRS Soluções.";
+  "Olá, como vai? Gostaria de fazer uma análise gratuita do meu contrato para verificar minha parcela, juros e possíveis cobranças questionáveis.";
+
+const fallbackWhatsAppNumber = "5511940394084";
 
 export function getWhatsAppHref(message = defaultWhatsAppMessage) {
-  const configuredNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "");
-
-  if (!configuredNumber) {
-    return "#lead-form";
-  }
+  const configuredNumber =
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || fallbackWhatsAppNumber;
 
   return `https://wa.me/${configuredNumber}?text=${encodeURIComponent(message)}`;
 }

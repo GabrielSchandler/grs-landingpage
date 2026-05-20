@@ -21,7 +21,7 @@ cp .env.example .env.local
 **Obrigatório:**
 - `GOOGLE_SHEETS_WEBHOOK_URL` — URL `/exec` do Web App do Google Apps Script
 - `GOOGLE_SHEETS_WEBHOOK_SECRET` — segredo privado usado para proteger o webhook
-- `NEXT_PUBLIC_WHATSAPP_NUMBER` — Seu número (formato: 55119876543)
+- `NEXT_PUBLIC_WHATSAPP_NUMBER` — Número do WhatsApp (ex.: 5511940394084)
 
 **Recomendado para tráfego pago:**
 - `NEXT_PUBLIC_GTM_ID` — Seu Google Tag Manager ID (GTM-XXXXX)

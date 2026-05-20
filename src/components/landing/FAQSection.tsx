@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ChevronDown, MessageCircle } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getWhatsAppHref } from "@/lib/whatsapp";
+import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
 import { faqs } from "@/lib/landing-content";
 
 export function FAQSection() {
   const [open, setOpen] = useState<number | null>(0);
-  const whatsAppHref = getWhatsAppHref();
 
   return (
     <section id="faq" className="border-b border-zinc-200 bg-white py-16 sm:py-24">
@@ -57,16 +56,13 @@ export function FAQSection() {
             >
               Solicitar análise gratuita
             </ButtonLink>
-            <ButtonLink
-              href={whatsAppHref}
-              target={whatsAppHref.startsWith("http") ? "_blank" : undefined}
-              rel="noopener noreferrer"
+            <WhatsAppLeadButton
               variant="secondary"
               className="min-h-12 px-7"
-              icon={<MessageCircle size={16} aria-hidden />}
+              placement="faq_cta"
             >
               Falar no WhatsApp
-            </ButtonLink>
+            </WhatsAppLeadButton>
           </div>
         </div>
       </Container>

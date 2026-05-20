@@ -10,11 +10,8 @@ import { LeadSection } from "@/components/landing/LeadSection";
 import { PainPoints } from "@/components/landing/PainPoints";
 import { SocialProof } from "@/components/landing/SocialProof";
 import { TrustSection } from "@/components/landing/TrustSection";
-import { getWhatsAppHref } from "@/lib/whatsapp";
 
 export default function Home() {
-  const whatsAppHref = getWhatsAppHref();
-
   return (
     <>
       <Header />
@@ -30,7 +27,7 @@ export default function Home() {
         <CtaBanner />
       </main>
       <Footer />
-      <FloatingWhatsApp href={whatsAppHref} />
+      <FloatingWhatsApp />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { MessageCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { getWhatsAppHref } from "@/lib/whatsapp";
+import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
 
 export function Footer() {
   return (
@@ -34,10 +34,15 @@ export function Footer() {
             <a href="#" className="transition hover:text-red-400">
               Termos de Uso
             </a>
-            <a href={getWhatsAppHref()} className="inline-flex items-center gap-2 transition hover:text-red-400">
+            <WhatsAppLeadButton
+              variant="inline"
+              placement="footer_link"
+              className="inline-flex items-center gap-2 text-sm"
+              showIcon={false}
+            >
               <MessageCircle size={16} aria-hidden />
               WhatsApp
-            </a>
+            </WhatsAppLeadButton>
           </nav>
         </div>
 
