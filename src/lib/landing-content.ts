@@ -38,7 +38,7 @@ export const navItems = [
 export const heroCopy = {
   title: "Seu banco pode estar cobrando mais do que você deveria pagar",
   subtitle:
-    "A GRS Soluções analisa tecnicamente seu contrato bancário e identifica juros acima do mercado, tarifas indevidas e cobranças que podem estar pesando no seu bolso há meses — sem que você saiba.",
+    "A GRS analisa tecnicamente seu contrato bancário e identifica juros acima do mercado, tarifas indevidas e cobranças que podem estar pesando no seu bolso há meses — sem que você saiba.",
   support:
     "Quando a dívida parece não diminuir mês após mês, o problema quase sempre está na estrutura do contrato. Você tem o direito de saber o que está pagando.",
   diagnosticTitle: "Diagnóstico técnico completo",
@@ -181,18 +181,18 @@ export const authorityBullets = [
 
 export const leadCards = [
   {
-    title: "Contato simples e sem compromisso",
-    text: "Você informa apenas nome e WhatsApp. O restante do atendimento continua diretamente com um consultor.",
+    title: "100% Gratuito e sem compromisso",
+    text: "Sem taxa de análise, sem cadastro em sistema de crédito, sem obrigação de contratar qualquer serviço.",
     icon: CheckCircle2,
   },
   {
-    title: "Conversa pelo WhatsApp",
-    text: "Depois do cadastro, você é direcionado para iniciar a conversa com a mensagem já preenchida.",
+    title: "Retorno em até 24 horas",
+    text: "Nossa equipe analisa seu caso e entra em contato pelo WhatsApp para explicar o que foi encontrado.",
     icon: FileSearch,
   },
   {
     title: "Atendimento humano e personalizado",
-    text: "Um consultor entende sua situação e orienta quais informações fazem sentido enviar no próximo passo.",
+    text: "Cada contrato é diferente. Você recebe uma orientação específica para a sua situação, não uma resposta genérica.",
     icon: PhoneCall,
   },
 ];

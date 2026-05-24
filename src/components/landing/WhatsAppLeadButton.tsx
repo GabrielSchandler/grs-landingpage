@@ -90,11 +90,15 @@ export function WhatsAppLeadButton({
   }, [open]);
 
   useEffect(() => {
-    if (!open || !canSubmit) {
+    if (!open) {
       return;
     }
 
     const phoneDigits = onlyDigits(whatsapp);
+
+    if (phoneDigits.length < 10) {
+      return;
+    }
 
     const storageDate = new Date().toISOString().slice(0, 10);
     const storageKey = `grs-whatsapp-popup-autosave:${storageDate}:${phoneDigits}`;
@@ -131,7 +135,7 @@ export function WhatsAppLeadButton({
     }, 1400);
 
     return () => window.clearTimeout(timeoutId);
-  }, [canSubmit, nome, open, placement, whatsapp]);
+  }, [nome, open, placement, whatsapp]);
 
   function openModal() {
     setFeedback(null);
