@@ -32,11 +32,25 @@ export default function RootLayout({
 }>) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
   const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
+  const googleAdsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID;
+  const gtagId = ga4Id || googleAdsConversionId;
 
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
-        {/* Google Tag Manager (noscript) */}
+        {gtmId && (
+          <Script id="gtm-init" strategy="afterInteractive">
+            {`
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','${gtmId}');
+            `}
+          </Script>
+        )}
+      </head>
+      <body className="min-h-screen antialiased">
         {gtmId && (
           <noscript>
             <iframe
@@ -47,25 +61,23 @@ export default function RootLayout({
             />
           </noscript>
         )}
-      </head>
-      <body className="min-h-screen antialiased">
-        {/* Google Tag Manager (gtag.js) */}
-        {gtmId && (
+
+        {/* GA4 / Google Ads global site tag. GTM can be used instead if preferred. */}
+        {gtagId && (
           <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${gtmId}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}
             strategy="afterInteractive"
           />
         )}
 
-        {/* GA4 & GTM initialization script */}
-        {(gtmId || ga4Id) && (
+        {gtagId && (
           <Script id="gtag-init" strategy="afterInteractive">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              ${gtmId ? `gtag('config', '${gtmId}');` : ""}
               ${ga4Id ? `gtag('config', '${ga4Id}');` : ""}
+              ${googleAdsConversionId ? `gtag('config', '${googleAdsConversionId}');` : ""}
             `}
           </Script>
         )}

@@ -2,12 +2,14 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
+import { HeroQuickForm } from "@/components/landing/HeroQuickForm";
 import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
 import { credibilityNumbers, heroBadges, heroCopy, heroIndicators } from "@/lib/landing-content";
 
 export function Hero() {
   return (
     <section className="relative isolate overflow-hidden bg-zinc-950">
+      <div id="lead-form" className="absolute top-0" aria-hidden />
       {/* Background gradients */}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(227,6,19,0.18),transparent_28%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.03),transparent_28%)]" />
       <div
@@ -18,32 +20,36 @@ export function Hero() {
       <div className="animate-float-soft absolute left-[6%] top-28 hidden h-20 w-20 rounded-full border border-zinc-700 bg-zinc-900/50 shadow-xl shadow-black/40 lg:block" aria-hidden />
       <div className="animate-float-soft absolute right-[8%] top-20 hidden h-28 w-28 rounded-full border border-red-900/30 bg-red-950/10 shadow-2xl shadow-black/40 lg:block [animation-delay:900ms]" aria-hidden />
 
-      <Container className="relative z-10 grid items-center gap-10 py-10 sm:py-16 lg:min-h-[calc(82vh-5rem)] lg:grid-cols-[0.95fr_1.05fr] lg:py-20">
+      <Container className="relative z-10 grid items-center gap-10 py-8 sm:py-16 lg:min-h-[calc(82vh-5rem)] lg:grid-cols-[0.95fr_1.05fr] lg:py-20">
         <div className="max-w-3xl animate-rise-in">
           <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-600/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-red-400">
             Análise técnica de contrato
           </div>
 
-          <h1 className="mt-6 text-[2.42rem] font-semibold leading-[1.02] text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 text-[2.08rem] font-semibold leading-[1.04] text-white sm:mt-6 sm:text-5xl sm:leading-[1.02] lg:text-6xl">
             {heroCopy.title}
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-300">{heroCopy.subtitle}</p>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-400">{heroCopy.support}</p>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-300 sm:mt-5 sm:text-lg sm:leading-8">{heroCopy.subtitle}</p>
+          <p className="mt-4 hidden max-w-2xl text-base leading-7 text-zinc-400 sm:block">{heroCopy.support}</p>
 
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="#lead-form" className="btn-pulse min-h-14 px-7 text-base" icon={<ArrowRight size={18} aria-hidden />}>
+          <div className="lg:hidden">
+            <HeroQuickForm />
+          </div>
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <ButtonLink href="#formulario-completo" variant="dark-outline" className="min-h-12 px-6 text-base" icon={<ArrowRight size={18} aria-hidden />}>
               Solicitar análise gratuita
             </ButtonLink>
             <WhatsAppLeadButton
               variant="dark-outline"
-              className="min-h-14 px-7 text-base"
+              className="min-h-12 px-6 text-base"
               placement="hero_secondary"
             >
               Falar com especialista
             </WhatsAppLeadButton>
           </div>
 
-          <div className="mt-8 grid gap-2 text-sm sm:grid-cols-3">
+          <div className="mt-6 grid gap-2 text-sm sm:grid-cols-3">
             {heroBadges.map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2.5">
                 <Icon className="size-4 shrink-0 text-[#e30613]" aria-hidden />
@@ -54,7 +60,10 @@ export function Hero() {
         </div>
 
         <div className="relative animate-rise-in [animation-delay:120ms]">
-          <div className="absolute -inset-5 rounded-lg bg-[#e30613]/20 blur-2xl" aria-hidden />
+          <div className="relative z-10 mb-5 hidden lg:block">
+            <HeroQuickForm />
+          </div>
+          <div className="pointer-events-none absolute -inset-5 rounded-lg bg-[#e30613]/20 blur-2xl" aria-hidden />
           <div className="premium-card relative overflow-hidden rounded-lg border border-zinc-700/50 bg-zinc-900 shadow-2xl shadow-black/50">
             <Image
               src="/grs-hero-vehicle-contract.png"

@@ -105,7 +105,13 @@ export const leadDraftSchema = z.object({
 export type LeadFormInput = z.input<typeof leadSchema>;
 export type LeadFormValues = z.output<typeof leadSchema>;
 export type LeadDraftValues = z.output<typeof leadDraftSchema>;
-export type LeadOrigin = "landing_page" | "whatsapp_popup" | "form_autosave" | "whatsapp_popup_autosave";
+export type LeadOrigin =
+  | "landing_page"
+  | "hero_quick_form"
+  | "hero_quick_autosave"
+  | "whatsapp_popup"
+  | "form_autosave"
+  | "whatsapp_popup_autosave";
 
 export function toLeadPayload(values: LeadFormValues, origem: LeadOrigin = "landing_page") {
   return {

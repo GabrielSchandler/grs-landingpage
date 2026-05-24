@@ -6,7 +6,7 @@ import { leadCards } from "@/lib/landing-content";
 
 export function LeadSection() {
   return (
-    <section id="lead-form" className="relative overflow-hidden bg-zinc-950 py-16 sm:py-24">
+    <section id="formulario-completo" className="relative overflow-hidden bg-zinc-950 py-16 sm:py-24">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_14%,rgba(227,6,19,0.14),transparent_28%),radial-gradient(circle_at_10%_80%,rgba(227,6,19,0.08),transparent_28%)]" aria-hidden />
       <div
         className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(#ffffff_1px,transparent_1px),linear-gradient(90deg,#ffffff_1px,transparent_1px)] [background-size:34px_34px]"

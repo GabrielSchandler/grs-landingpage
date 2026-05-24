@@ -14,6 +14,21 @@ type GoogleSheetsResponse = {
   error?: string;
 };
 
+const allowedOrigins = new Set<LeadOrigin>([
+  "landing_page",
+  "hero_quick_form",
+  "hero_quick_autosave",
+  "whatsapp_popup",
+  "form_autosave",
+  "whatsapp_popup_autosave",
+]);
+
+const draftOrigins = new Set<LeadOrigin>([
+  "form_autosave",
+  "hero_quick_autosave",
+  "whatsapp_popup_autosave",
+]);
+
 export async function POST(request: Request) {
   const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
   const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET;
@@ -28,14 +43,10 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const origem: LeadOrigin =
-      body?.origem === "whatsapp_popup"
-        ? "whatsapp_popup"
-        : body?.origem === "form_autosave"
-          ? "form_autosave"
-          : body?.origem === "whatsapp_popup_autosave"
-            ? "whatsapp_popup_autosave"
-            : "landing_page";
-    const isDraftLead = origem === "form_autosave" || origem === "whatsapp_popup_autosave";
+      typeof body?.origem === "string" && allowedOrigins.has(body.origem)
+        ? body.origem
+        : "landing_page";
+    const isDraftLead = draftOrigins.has(origem);
     const parsed = isDraftLead ? leadDraftSchema.safeParse(body) : leadSchema.safeParse(body);
 
     if (!parsed.success) {
