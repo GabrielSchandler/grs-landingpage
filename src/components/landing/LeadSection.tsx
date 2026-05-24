@@ -15,9 +15,8 @@ export function LeadSection() {
       <Container className="relative z-10">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div className="lg:sticky lg:top-28">
-            <SectionHeading dark title="Solicite sua análise gratuita">
-              Informe seu nome e WhatsApp para a equipe iniciar o atendimento. Os detalhes do contrato ajudam, mas você
-              também pode conversar direto com um especialista.
+            <SectionHeading dark title="Fale com a GRS Soluções pelo WhatsApp">
+              Informe seu nome e WhatsApp para registrar seu contato. Um consultor continua o atendimento na conversa.
             </SectionHeading>
 
             <div className="mt-8 grid gap-3">

@@ -7,12 +7,18 @@ import { useForm, useWatch } from "react-hook-form";
 import { leadSchema, type LeadFormInput, type LeadFormValues } from "@/lib/lead-schema";
 import { trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
+import { getWhatsAppHref } from "@/lib/whatsapp";
 
 const inputClass =
   "min-h-12 w-full rounded-md border border-white/10 bg-white px-3.5 py-2.5 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-red-400 focus:ring-4 focus:ring-red-500/20";
 
 function onlyDigits(value: string) {
   return value.replace(/\D/g, "");
+}
+
+function getAutosaveKey(phoneDigits: string) {
+  const storageDate = new Date().toISOString().slice(0, 10);
+  return `grs-hero-autosave:${storageDate}:${phoneDigits}`;
 }
 
 export function HeroQuickForm() {
@@ -46,12 +52,11 @@ export function HeroQuickForm() {
   const canSubmit = nome.trim().length >= 2 && phoneDigits.length >= 10;
 
   useEffect(() => {
-    if (isSuccess || phoneDigits.length < 10) {
+    if (isSuccess || !canSubmit) {
       return;
     }
 
-    const storageDate = new Date().toISOString().slice(0, 10);
-    const storageKey = `grs-hero-autosave:${storageDate}:${phoneDigits}`;
+    const storageKey = getAutosaveKey(phoneDigits);
 
     if (window.localStorage.getItem(storageKey)) {
       return;
@@ -75,7 +80,8 @@ export function HeroQuickForm() {
         if (response.ok && result?.ok === true) {
           window.localStorage.setItem(storageKey, new Date().toISOString());
           trackEvent("hero_quick_autosave", {
-            has_nome: Boolean(nome.trim()),
+            has_nome: true,
+            destination: "whatsapp",
           });
         }
       } catch {
@@ -84,43 +90,51 @@ export function HeroQuickForm() {
     }, 1100);
 
     return () => window.clearTimeout(timeoutId);
-  }, [isSuccess, nome, phoneDigits, whatsapp]);
+  }, [canSubmit, isSuccess, nome, phoneDigits, whatsapp]);
 
   async function onSubmit(values: LeadFormValues) {
     setFeedback(null);
 
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...values,
-          origem: "hero_quick_form",
-        }),
-      });
+      const currentPhoneDigits = onlyDigits(values.whatsapp);
+      const storageKey = getAutosaveKey(currentPhoneDigits);
 
-      const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!window.localStorage.getItem(storageKey)) {
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...values,
+            origem: "hero_quick_form",
+          }),
+        });
 
-      if (!response.ok || result?.ok !== true) {
-        throw new Error(result?.error || "Não foi possível enviar agora. Tente novamente em instantes.");
+        const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+
+        if (!response.ok || result?.ok !== true) {
+          throw new Error(result?.error || "Não foi possível registrar seu contato agora.");
+        }
+
+        window.localStorage.setItem(storageKey, new Date().toISOString());
       }
 
       trackEvent("hero_quick_form_submit", {
         placement: "hero",
+        destination: "whatsapp",
       });
 
       setIsSuccess(true);
       reset();
       setFeedback({
         type: "success",
-        message: "Recebemos seu contato. Você será redirecionado para confirmar a solicitação.",
+        message: "Contato registrado. Abrindo o WhatsApp...",
       });
 
       window.setTimeout(() => {
-        window.location.href = "/obrigado";
-      }, 900);
+        window.location.href = getWhatsAppHref();
+      }, 350);
     } catch (error) {
       trackEvent("lead_form_error", {
         error: error instanceof Error ? error.message : "unknown",
@@ -144,9 +158,9 @@ export function HeroQuickForm() {
     >
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-white">Receba uma análise inicial gratuita</p>
+          <p className="text-sm font-semibold text-white">Fale com a GRS Soluções pelo WhatsApp</p>
           <p className="mt-1 text-xs leading-5 text-zinc-400">
-            Preencha em menos de 30 segundos. Nome e WhatsApp bastam para iniciar.
+            Nome e WhatsApp bastam para falar com um consultor.
           </p>
         </div>
         <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
@@ -188,7 +202,7 @@ export function HeroQuickForm() {
           )}
         >
           {isSubmitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Send className="size-4" aria-hidden />}
-          {isSubmitting ? "Enviando..." : "Quero análise"}
+          {isSubmitting ? "Registrando..." : "Avançar"}
         </button>
       </div>
 
@@ -207,7 +221,7 @@ export function HeroQuickForm() {
       ) : null}
 
       <p className="mt-3 text-[11px] leading-5 text-zinc-500">
-        Seus dados são usados apenas para atendimento e análise do caso, conforme a LGPD.
+        Seus dados são usados apenas para atendimento da GRS Soluções, conforme a LGPD.
       </p>
     </form>
   );

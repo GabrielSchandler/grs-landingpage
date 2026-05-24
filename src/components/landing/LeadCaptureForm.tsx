@@ -1,24 +1,44 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Loader2, Send } from "lucide-react";
+import { Loader2, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import {
-  contractTypeOptions,
-  leadSchema,
-  type LeadFormInput,
-  type LeadFormValues,
-} from "@/lib/lead-schema";
-import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
+import { leadSchema, type LeadFormInput, type LeadFormValues } from "@/lib/lead-schema";
 import { trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
+import { getWhatsAppHref } from "@/lib/whatsapp";
 
 const inputClass =
-  "min-h-11 w-full rounded-md border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-red-400 focus:ring-4 focus:ring-red-100";
+  "min-h-12 w-full rounded-md border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-red-400 focus:ring-4 focus:ring-red-100";
 
 function onlyDigits(value: string) {
   return value.replace(/\D/g, "");
+}
+
+function getAutosaveKey(phoneDigits: string) {
+  const storageDate = new Date().toISOString().slice(0, 10);
+  return `grs-form-autosave:${storageDate}:${phoneDigits}`;
+}
+
+async function sendLead(payload: {
+  nome: string;
+  whatsapp: string;
+  origem: "landing_page" | "form_autosave";
+}) {
+  const response = await fetch("/api/leads", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+
+  if (!response.ok || result?.ok !== true) {
+    throw new Error(result?.error || "Não foi possível registrar seu contato agora.");
+  }
 }
 
 export function LeadCaptureForm() {
@@ -37,33 +57,21 @@ export function LeadCaptureForm() {
     defaultValues: {
       nome: "",
       whatsapp: "",
-      tipo_contrato: "",
-      valor_parcela: "",
-      parcelas_atrasadas: "",
-      banco: "",
-      mensagem: "",
     },
   });
 
   const watchedValues = useWatch({ control });
   const nome = watchedValues.nome ?? "";
   const whatsapp = watchedValues.whatsapp ?? "";
-
-  const essentialFieldsFilled = nome.trim().length >= 2 && whatsapp.trim().length >= 10;
+  const phoneDigits = onlyDigits(whatsapp);
+  const canContinue = nome.trim().length >= 2 && phoneDigits.length >= 10;
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || !canContinue) {
       return;
     }
 
-    const phoneDigits = onlyDigits(watchedValues.whatsapp ?? "");
-
-    if (phoneDigits.length < 10) {
-      return;
-    }
-
-    const storageDate = new Date().toISOString().slice(0, 10);
-    const storageKey = `grs-form-autosave:${storageDate}:${phoneDigits}`;
+    const storageKey = getAutosaveKey(phoneDigits);
 
     if (window.localStorage.getItem(storageKey)) {
       return;
@@ -71,82 +79,60 @@ export function LeadCaptureForm() {
 
     const timeoutId = window.setTimeout(async () => {
       try {
-        const payload = {
-          nome: watchedValues.nome ?? "",
-          whatsapp: watchedValues.whatsapp ?? "",
-          tipo_contrato: watchedValues.tipo_contrato ?? "",
-          valor_parcela: watchedValues.valor_parcela ?? "",
-          parcelas_atrasadas: watchedValues.parcelas_atrasadas ?? "",
-          banco: watchedValues.banco ?? "",
-          mensagem: watchedValues.mensagem ?? "",
+        await sendLead({
+          nome,
+          whatsapp,
           origem: "form_autosave",
-        };
-
-        const response = await fetch("/api/leads", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
         });
-        const result = (await response.json().catch(() => null)) as { ok?: boolean } | null;
 
-        if (response.ok && result?.ok === true) {
-          window.localStorage.setItem(storageKey, new Date().toISOString());
-          trackEvent("lead_form_autosave", {
-            has_nome: Boolean(payload.nome.trim()),
-            has_tipo_contrato: Boolean(payload.tipo_contrato),
-          });
-        }
+        window.localStorage.setItem(storageKey, new Date().toISOString());
+        trackEvent("lead_form_autosave", {
+          has_nome: true,
+          destination: "whatsapp",
+        });
       } catch {
-        // Autosave is a silent safety net; the main form remains the primary conversion.
+        // Autosave is silent; the submit button will retry before opening WhatsApp.
       }
-    }, 1400);
+    }, 900);
 
     return () => window.clearTimeout(timeoutId);
-  }, [
-    isSuccess,
-    watchedValues.banco,
-    watchedValues.mensagem,
-    watchedValues.nome,
-    watchedValues.parcelas_atrasadas,
-    watchedValues.tipo_contrato,
-    watchedValues.valor_parcela,
-    watchedValues.whatsapp,
-  ]);
+  }, [canContinue, isSuccess, nome, phoneDigits, whatsapp]);
 
   async function onSubmit(values: LeadFormValues) {
     setFeedback(null);
 
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const currentPhoneDigits = onlyDigits(values.whatsapp);
+      const storageKey = getAutosaveKey(currentPhoneDigits);
 
-      const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!window.localStorage.getItem(storageKey)) {
+        await sendLead({
+          nome: values.nome,
+          whatsapp: values.whatsapp,
+          origem: "landing_page",
+        });
 
-      if (!response.ok || result?.ok !== true) {
-        throw new Error(result?.error || "Não foi possível enviar agora. Tente novamente em instantes.");
+        window.localStorage.setItem(storageKey, new Date().toISOString());
       }
 
       trackEvent("lead_form_submit", {
-        tipo_contrato: values.tipo_contrato,
-        valor_parcela: values.valor_parcela,
+        destination: "whatsapp",
       });
 
       setIsSuccess(true);
       reset();
+      setFeedback({
+        type: "success",
+        message: "Contato registrado. Abrindo o WhatsApp...",
+      });
 
-      setTimeout(() => {
-        window.location.href = "/obrigado";
-      }, 1500);
+      window.setTimeout(() => {
+        window.location.href = getWhatsAppHref();
+      }, 350);
     } catch (error) {
       trackEvent("lead_form_error", {
         error: error instanceof Error ? error.message : "unknown",
+        destination: "whatsapp",
       });
 
       setFeedback({
@@ -154,23 +140,9 @@ export function LeadCaptureForm() {
         message:
           error instanceof Error
             ? error.message
-            : "Não foi possível enviar agora. Tente novamente em instantes ou chame pelo WhatsApp.",
+            : "Não foi possível registrar seu contato agora. Tente novamente em instantes.",
       });
     }
-  }
-
-  if (isSuccess) {
-    return (
-      <div className="premium-card rounded-lg border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-6 text-center shadow-2xl shadow-emerald-950/10 sm:p-8">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-emerald-100">
-          <Check className="size-8 text-emerald-600" aria-hidden />
-        </div>
-        <h3 className="text-xl font-bold text-zinc-950">Análise solicitada com sucesso!</h3>
-        <p className="mt-3 text-sm leading-6 text-zinc-600">
-          Você será redirecionado para a próxima página. Prepare os documentos do seu contrato para o atendimento.
-        </p>
-      </div>
-    );
   }
 
   return (
@@ -178,40 +150,32 @@ export function LeadCaptureForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="premium-card relative overflow-hidden rounded-lg border border-zinc-200 bg-gradient-to-br from-white to-zinc-50 p-6 shadow-2xl shadow-zinc-950/12 sm:p-8"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(227,6,19,0.05),transparent_50%)] pointer-events-none" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(227,6,19,0.05),transparent_50%)]"
+        aria-hidden
+      />
       <div className="relative z-10">
-
-        {/* Header */}
         <div className="mb-6">
           <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
             <span className="size-2 animate-pulse rounded-full bg-emerald-500" aria-hidden />
-            Análises abertas agora — gratuito e sem compromisso
+            Atendimento pelo WhatsApp
           </div>
           <h3 className="text-xl font-bold tracking-tight text-zinc-950">
-            Descubra se seu banco está cobrando mais do que pode
+            Fale com um consultor da GRS Soluções
           </h3>
           <p className="mt-2 text-sm leading-6 text-zinc-600">
-            Informe seu nome e WhatsApp para a equipe iniciar o contato. Se quiser, adicione detalhes do contrato para agilizar a análise.
+            Informe seu nome e WhatsApp. Antes de abrir a conversa, registramos seu contato para dar continuidade ao atendimento.
           </p>
         </div>
 
-        <WhatsAppLeadButton
-          variant="secondary"
-          className="mb-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
-          placement="lead_form_direct_button"
-        >
-          Prefiro falar direto pelo WhatsApp
-        </WhatsAppLeadButton>
-
-        {/* Badges */}
         <div className="mb-6 flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
             <span className="size-2 rounded-full bg-red-600" aria-hidden />
-            100% Gratuito
+            Sem compromisso
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
             <span className="size-2 rounded-full bg-blue-600" aria-hidden />
-            Sem compromisso
+            Atendimento humano
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
             <span className="size-2 rounded-full bg-amber-600" aria-hidden />
@@ -219,7 +183,6 @@ export function LeadCaptureForm() {
           </span>
         </div>
 
-        {/* All fields visible */}
         <div className="grid gap-4">
           <Field label="WhatsApp com DDD" error={errors.whatsapp?.message}>
             <input
@@ -239,68 +202,6 @@ export function LeadCaptureForm() {
               autoComplete="name"
             />
           </Field>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Tipo de contrato (opcional)" error={errors.tipo_contrato?.message}>
-              <select {...register("tipo_contrato")} className={cn(inputClass, "appearance-none")}>
-                <option value="">Selecione o tipo</option>
-                {contractTypeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </Field>
-
-            <Field label="Valor da parcela (opcional)" error={errors.valor_parcela?.message}>
-              <input
-                {...register("valor_parcela")}
-                className={inputClass}
-                placeholder="R$ 1.250,00"
-                inputMode="decimal"
-              />
-            </Field>
-          </div>
-
-          <Field label="Está com parcelas atrasadas? (opcional)" error={errors.parcelas_atrasadas?.message}>
-            <div className="flex gap-3">
-              {[
-                { value: "nao", label: "Não" },
-                { value: "sim", label: "Sim" },
-              ].map((option) => (
-                <label key={option.value} className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="radio"
-                    {...register("parcelas_atrasadas")}
-                    value={option.value}
-                    className="size-4 cursor-pointer accent-red-600"
-                  />
-                  <span className="text-sm font-medium text-zinc-700">{option.label}</span>
-                </label>
-              ))}
-            </div>
-          </Field>
-
-          {/* Optional fields — always visible, clearly labeled */}
-          <div className="space-y-4 rounded-lg border border-zinc-100 bg-zinc-50/60 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">Informações adicionais (opcional)</p>
-
-            <Field label="Banco ou financeira" error={errors.banco?.message}>
-              <input
-                {...register("banco")}
-                className={inputClass}
-                placeholder="Itaú, Caixa, Bradesco..."
-              />
-            </Field>
-
-            <Field label="Conte brevemente seu caso" error={errors.mensagem?.message}>
-              <textarea
-                {...register("mensagem")}
-                className={cn(inputClass, "min-h-20 resize-y")}
-                placeholder="Ex: Financiei um carro por 60 meses e acho que estou pagando muita taxa."
-              />
-            </Field>
-          </div>
         </div>
 
         {feedback ? (
@@ -319,31 +220,34 @@ export function LeadCaptureForm() {
 
         <button
           type="submit"
-          disabled={isSubmitting || !essentialFieldsFilled}
+          disabled={isSubmitting || !canContinue}
           className={cn(
-            "mt-6 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-md border font-semibold text-white transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white",
-            essentialFieldsFilled
-              ? "border-[#e30613] bg-[#e30613] btn-pulse hover:bg-[#bd1018] focus:ring-red-500 cursor-pointer"
-              : "border-zinc-200 bg-zinc-100 text-zinc-400 cursor-not-allowed",
+            "mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border font-semibold text-white transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white",
+            canContinue
+              ? "btn-pulse cursor-pointer border-[#e30613] bg-[#e30613] hover:bg-[#bd1018] focus:ring-red-500"
+              : "cursor-not-allowed border-zinc-200 bg-zinc-100 text-zinc-400",
           )}
         >
           {isSubmitting ? (
             <>
               <Loader2 className="size-4 animate-spin" aria-hidden />
-              Enviando seus dados...
+              Registrando contato...
             </>
           ) : (
             <>
-              <Send className="size-4" aria-hidden />
-              Quero minha análise gratuita
+              <MessageCircle className="size-4" aria-hidden />
+              Avançar para WhatsApp
             </>
           )}
         </button>
 
         <div className="mt-5 flex items-start gap-2 rounded-lg bg-zinc-50 px-3.5 py-3 text-xs leading-5 text-zinc-600">
-          <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-red-100 text-[10px] font-bold text-red-600">✓</div>
+          <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-red-100 text-[10px] font-bold text-red-600">
+            ✓
+          </div>
           <span>
-            Seus dados são tratados com segurança conforme a <span className="font-semibold text-zinc-900">LGPD</span>. Se informar o WhatsApp e sair antes de concluir, podemos registrar esse contato para continuidade do atendimento.
+            Ao avançar, você autoriza o contato da GRS Soluções pelo WhatsApp. Seus dados são tratados conforme a{" "}
+            <span className="font-semibold text-zinc-900">LGPD</span>.
           </span>
         </div>
       </div>
