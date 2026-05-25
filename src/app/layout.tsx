@@ -16,12 +16,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "GRS Soluções | Análise de contratos bancários",
   description:
-    "Análise técnica de contratos bancários para identificar possíveis juros abusivos, tarifas indevidas ou cobranças questionáveis.",
+    "Análise técnica e educacional de contratos bancários: entenda parcelas, juros, tarifas e condições do seu financiamento ou empréstimo.",
   openGraph: {
     title: "GRS Soluções | Análise de contratos bancários",
     description:
-      "Entenda se seu financiamento pode estar custando mais do que deveria com uma análise técnica e responsável.",
+      "Entenda cada cobrança do seu contrato bancário com uma análise técnica gratuita e em linguagem clara.",
     type: "website",
+  },
+  twitter: {
+    description:
+      "Entenda cada cobrança do seu contrato bancário com uma análise técnica gratuita e em linguagem clara.",
   },
 };
 
