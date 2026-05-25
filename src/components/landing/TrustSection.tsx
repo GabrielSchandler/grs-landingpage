@@ -9,14 +9,14 @@ export function TrustSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_12%,rgba(227,6,19,0.08),transparent_28%),linear-gradient(180deg,#fff_0%,#fafafa_100%)]" aria-hidden />
       <Container>
         <div className="relative z-10 grid gap-10 lg:grid-cols-[1fr_0.96fr] lg:items-center">
-          <SectionHeading title="Revisão de juros não é promessa. É análise técnica.">
+          <SectionHeading title="Análise técnica de contrato: o que é, e o que não é">
             <span>
-              A revisão de juros é um procedimento técnico que avalia se as cobranças do contrato estão coerentes com o
-              que foi contratado, com o Código de Defesa do Consumidor e com parâmetros de mercado.
+              Nossa análise é um diagnóstico técnico e educacional do seu contrato. Avaliamos taxas, encargos, tarifas e
+              condições para que você entenda exatamente o que foi acordado e o que está sendo cobrado.
             </span>
             <span className="mt-4 block">
-              Nosso papel é trazer clareza para o cliente, identificar possíveis pontos questionáveis e orientar o
-              próximo passo com responsabilidade.
+              Não somos escritório de advocacia e não prometemos resultado. Qualquer decisão jurídica futura depende da
+              avaliação de um advogado habilitado contratado pelo próprio cliente.
             </span>
           </SectionHeading>
 

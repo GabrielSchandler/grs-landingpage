@@ -17,10 +17,10 @@ export function CtaBanner() {
       <Container className="relative z-10">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-            Não deixe o banco lucrar às suas custas
+            Entenda seu contrato antes de qualquer decisão
           </h2>
           <p className="mt-4 text-lg leading-8 text-red-100">
-            Uma análise técnica gratuita pode mostrar exatamente o que está pesando no seu contrato.
+            Uma análise técnica gratuita ajuda você a entender cada item do seu contrato com clareza.
             Leva menos de 2 minutos para solicitar.
           </p>
 

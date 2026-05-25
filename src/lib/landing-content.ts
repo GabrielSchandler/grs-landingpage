@@ -36,9 +36,9 @@ export const navItems = [
 ];
 
 export const heroCopy = {
-  title: "Seu banco pode estar cobrando mais do que você deveria pagar",
+  title: "Entenda exatamente o que você paga no seu contrato bancário",
   subtitle:
-    "A GRS analisa tecnicamente seu contrato bancário e identifica juros acima do mercado, tarifas indevidas e cobranças que podem estar pesando no seu bolso há meses — sem que você saiba.",
+    "A GRS faz uma análise técnica e educacional do seu contrato bancário, em linguagem clara, para você entender cada taxa, tarifa e condição contratual antes de tomar qualquer decisão.",
   support:
     "Quando a dívida parece não diminuir mês após mês, o problema quase sempre está na estrutura do contrato. Você tem o direito de saber o que está pagando.",
   diagnosticTitle: "Diagnóstico técnico completo",
@@ -86,13 +86,13 @@ export const pains = [
   {
     title: "Ameaça de busca e apreensão",
     description:
-      "Cobranças constantes, negativação no CPF e risco de perder o bem. O banco sabe como pressionar — você precisa saber como se proteger.",
+      "Cobranças constantes, negativação no CPF e risco de perder o bem. Entender o contrato é o primeiro passo para tomar decisões com mais segurança.",
     icon: ShieldAlert,
   },
   {
     title: "Taxa de juros acima do mercado",
     description:
-      "O contrato diz uma taxa. O que você paga na prática pode ser outra. Essa diferença, ao longo de anos, representa muito dinheiro.",
+      "O contrato diz uma taxa. Entender se ela está coerente com o mercado e com o que foi assinado faz diferença ao longo de todo o financiamento.",
     icon: Search,
   },
   {

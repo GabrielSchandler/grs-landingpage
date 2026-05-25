@@ -188,7 +188,7 @@ export function LeadCaptureForm() {
             Análises abertas agora — gratuito e sem compromisso
           </div>
           <h3 className="text-xl font-bold tracking-tight text-zinc-950">
-            Descubra se seu banco está cobrando mais do que pode
+            Tenha clareza sobre cada cobrança do seu contrato
           </h3>
           <p className="mt-2 text-sm leading-6 text-zinc-600">
             Informe seu nome e WhatsApp para a equipe iniciar o contato. Se quiser, adicione detalhes do contrato para agilizar a análise.
