@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
 import { Loader2, MessageCircle, X } from "lucide-react";
+import { ensureLeadSaved, onlyDigits } from "@/lib/lead-client";
 import { defaultWhatsAppMessage, getWhatsAppHref } from "@/lib/whatsapp";
 import { trackEvent } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
@@ -45,10 +46,6 @@ const variants: Record<WhatsAppLeadButtonVariant, string> = {
 
 function phoneDigitCount(value: string) {
   return (value.match(/\d/g) ?? []).length;
-}
-
-function onlyDigits(value: string) {
-  return value.replace(/\D/g, "");
 }
 
 export function WhatsAppLeadButton({
@@ -109,33 +106,24 @@ export function WhatsAppLeadButton({
 
     const timeoutId = window.setTimeout(async () => {
       try {
-        const response = await fetch("/api/leads", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            nome,
-            whatsapp,
-            origem: "whatsapp_popup_autosave",
-          }),
+        await ensureLeadSaved({
+          nome,
+          whatsapp,
+          origem: "whatsapp_popup_autosave",
         });
-        const result = (await response.json().catch(() => null)) as { ok?: boolean } | null;
 
-        if (response.ok && result?.ok === true) {
-          window.localStorage.setItem(storageKey, new Date().toISOString());
-          trackEvent("whatsapp_popup_autosave", {
-            placement,
-            has_nome: Boolean(nome.trim()),
-          });
-        }
+        window.localStorage.setItem(storageKey, new Date().toISOString());
+        trackEvent("whatsapp_popup_autosave", {
+          placement,
+          has_nome: true,
+        });
       } catch {
         // Popup autosave is intentionally silent so the WhatsApp flow stays fast.
       }
     }, 1400);
 
     return () => window.clearTimeout(timeoutId);
-  }, [nome, open, placement, whatsapp]);
+  }, [canSubmit, nome, open, placement, whatsapp]);
 
   function openModal() {
     setFeedback(null);
@@ -155,23 +143,11 @@ export function WhatsAppLeadButton({
     setFeedback(null);
 
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nome,
-          whatsapp,
-          origem: "whatsapp_popup",
-        }),
+      await ensureLeadSaved({
+        nome,
+        whatsapp,
+        origem: "whatsapp_popup",
       });
-
-      const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
-
-      if (!response.ok || result?.ok !== true) {
-        throw new Error(result?.error || "Não foi possível registrar seu contato agora.");
-      }
 
       trackEvent("whatsapp_lead_submit", { placement });
       window.location.href = getWhatsAppHref(message);
@@ -218,7 +194,7 @@ export function WhatsAppLeadButton({
 
             <form onSubmit={handleSubmit} className="mt-5 grid gap-4">
               <label className="block">
-                <span className="mb-2 block text-sm font-medium text-zinc-800">WhatsApp com DDD</span>
+                <span className="mb-2 block text-sm font-medium text-zinc-800">Telefone com DDD</span>
                 <input
                   value={whatsapp}
                   onChange={(event) => setWhatsapp(event.target.value)}

@@ -33,26 +33,80 @@ function doPost(e) {
     const sheet = getOrCreateSheet(spreadsheet, sheetName);
 
     ensureHeaders(sheet);
-    sheet.appendRow([
-      meta.submitted_at || new Date().toISOString(),
-      lead.nome || "",
-      lead.whatsapp || "",
-      lead.tipo_contrato || "",
-      lead.valor_parcela || "",
-      formatBoolean(lead.parcelas_atrasadas),
-      lead.banco || "",
-      lead.mensagem || "",
-      lead.origem || "landing_page",
-      meta.page_url || "",
-    ]);
+    const row = buildLeadRow(lead, meta);
+    const existingRowIndex = findExistingLeadRow(sheet, lead.whatsapp);
 
-    return json({ ok: true });
+    if (existingRowIndex) {
+      const current = sheet.getRange(existingRowIndex, 1, 1, HEADERS.length).getValues()[0];
+      sheet.getRange(existingRowIndex, 1, 1, HEADERS.length).setValues([
+        mergeLeadRow(current, row),
+      ]);
+
+      return json({ ok: true, updated: true });
+    }
+
+    sheet.appendRow(row);
+
+    return json({ ok: true, inserted: true });
   } catch (error) {
     return json({
       ok: false,
       error: error && error.message ? error.message : String(error),
     });
   }
+}
+
+function buildLeadRow(lead, meta) {
+  return [
+    meta.submitted_at || new Date().toISOString(),
+    lead.nome || "",
+    lead.whatsapp || "",
+    lead.tipo_contrato || "",
+    lead.valor_parcela || "",
+    formatBoolean(lead.parcelas_atrasadas),
+    lead.banco || "",
+    lead.mensagem || "",
+    lead.origem || "landing_page",
+    meta.page_url || "",
+  ];
+}
+
+function mergeLeadRow(current, incoming) {
+  return HEADERS.map(function (_header, index) {
+    if (index === 0) {
+      return current[index] || incoming[index];
+    }
+
+    if (index === 8) {
+      return incoming[index] || current[index];
+    }
+
+    return incoming[index] !== "" && incoming[index] !== null && incoming[index] !== undefined
+      ? incoming[index]
+      : current[index];
+  });
+}
+
+function findExistingLeadRow(sheet, whatsapp) {
+  const target = normalizePhone(whatsapp);
+
+  if (!target || sheet.getLastRow() < 2) {
+    return null;
+  }
+
+  const whatsappValues = sheet.getRange(2, 3, sheet.getLastRow() - 1, 1).getValues();
+
+  for (let index = whatsappValues.length - 1; index >= 0; index -= 1) {
+    if (normalizePhone(whatsappValues[index][0]) === target) {
+      return index + 2;
+    }
+  }
+
+  return null;
+}
+
+function normalizePhone(value) {
+  return String(value || "").replace(/\D/g, "");
 }
 
 function formatBoolean(value) {

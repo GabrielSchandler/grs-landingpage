@@ -1,5 +1,5 @@
 export const defaultWhatsAppMessage =
-  "Olá, como vai? Gostaria de fazer uma análise gratuita do meu contrato para verificar minha parcela, juros e possíveis cobranças questionáveis.";
+  "Olá! Estou interessado em reduzir a parcela do meu financiamento. Gostaria de mais informações.";
 
 const fallbackWhatsAppNumber = "5511940394084";
 
