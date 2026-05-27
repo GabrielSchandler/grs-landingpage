@@ -14,7 +14,13 @@ const HEADERS = [
 ];
 
 function doPost(e) {
+  const lock = LockService.getScriptLock();
+  let locked = false;
+
   try {
+    lock.waitLock(10000);
+    locked = true;
+
     const props = PropertiesService.getScriptProperties();
     const webhookSecret = props.getProperty("WEBHOOK_SECRET");
     const spreadsheetId = props.getProperty("SPREADSHEET_ID");
@@ -34,15 +40,25 @@ function doPost(e) {
 
     ensureHeaders(sheet);
     const row = buildLeadRow(lead, meta);
-    const existingRowIndex = findExistingLeadRow(sheet, lead.whatsapp);
+    const matchingRows = findLeadRowsByPhone(sheet, lead.whatsapp);
 
-    if (existingRowIndex) {
-      const current = sheet.getRange(existingRowIndex, 1, 1, HEADERS.length).getValues()[0];
-      sheet.getRange(existingRowIndex, 1, 1, HEADERS.length).setValues([
-        mergeLeadRow(current, row),
-      ]);
+    if (matchingRows.length > 0) {
+      const canonicalRowIndex = matchingRows[0];
+      const existingRows = matchingRows.map(function (rowIndex) {
+        return sheet.getRange(rowIndex, 1, 1, HEADERS.length).getValues()[0];
+      });
+      const mergedRow = existingRows.concat([row]).reduce(function (current, incoming) {
+        return mergeLeadRow(current, incoming);
+      });
 
-      return json({ ok: true, updated: true });
+      sheet.getRange(canonicalRowIndex, 1, 1, HEADERS.length).setValues([mergedRow]);
+      deleteDuplicateRows(sheet, matchingRows.slice(1));
+
+      return json({
+        ok: true,
+        updated: true,
+        merged_duplicates: matchingRows.length - 1,
+      });
     }
 
     sheet.appendRow(row);
@@ -53,6 +69,10 @@ function doPost(e) {
       ok: false,
       error: error && error.message ? error.message : String(error),
     });
+  } finally {
+    if (locked) {
+      lock.releaseLock();
+    }
   }
 }
 
@@ -87,22 +107,95 @@ function mergeLeadRow(current, incoming) {
   });
 }
 
-function findExistingLeadRow(sheet, whatsapp) {
+function findLeadRowsByPhone(sheet, whatsapp) {
   const target = normalizePhone(whatsapp);
 
   if (!target || sheet.getLastRow() < 2) {
-    return null;
+    return [];
   }
 
   const whatsappValues = sheet.getRange(2, 3, sheet.getLastRow() - 1, 1).getValues();
+  const matchingRows = [];
 
-  for (let index = whatsappValues.length - 1; index >= 0; index -= 1) {
+  for (let index = 0; index < whatsappValues.length; index += 1) {
     if (normalizePhone(whatsappValues[index][0]) === target) {
-      return index + 2;
+      matchingRows.push(index + 2);
     }
   }
 
-  return null;
+  return matchingRows;
+}
+
+function deleteDuplicateRows(sheet, rowIndexes) {
+  rowIndexes
+    .slice()
+    .sort(function (a, b) {
+      return b - a;
+    })
+    .forEach(function (rowIndex) {
+      sheet.deleteRow(rowIndex);
+    });
+}
+
+function deduplicateExistingLeads() {
+  const lock = LockService.getScriptLock();
+  let locked = false;
+
+  try {
+    lock.waitLock(10000);
+    locked = true;
+
+    const props = PropertiesService.getScriptProperties();
+    const spreadsheetId = props.getProperty("SPREADSHEET_ID");
+    const sheetName = props.getProperty("SHEET_NAME") || DEFAULT_SHEET_NAME;
+    const spreadsheet = spreadsheetId
+      ? SpreadsheetApp.openById(spreadsheetId)
+      : SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = getOrCreateSheet(spreadsheet, sheetName);
+
+    ensureHeaders(sheet);
+
+    if (sheet.getLastRow() < 2) {
+      return;
+    }
+
+    const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, HEADERS.length).getValues();
+    const phones = [];
+    const mergedByPhone = {};
+
+    rows.forEach(function (row) {
+      const phone = normalizePhone(row[2]);
+
+      if (!phone) {
+        const missingPhoneKey = "row_without_phone_" + phones.length;
+        phones.push(missingPhoneKey);
+        mergedByPhone[missingPhoneKey] = row;
+        return;
+      }
+
+      if (!mergedByPhone[phone]) {
+        phones.push(phone);
+        mergedByPhone[phone] = row;
+        return;
+      }
+
+      mergedByPhone[phone] = mergeLeadRow(mergedByPhone[phone], row);
+    });
+
+    sheet.getRange(2, 1, sheet.getLastRow() - 1, HEADERS.length).clearContent();
+
+    if (phones.length > 0) {
+      sheet.getRange(2, 1, phones.length, HEADERS.length).setValues(
+        phones.map(function (phone) {
+          return mergedByPhone[phone];
+        }),
+      );
+    }
+  } finally {
+    if (locked) {
+      lock.releaseLock();
+    }
+  }
 }
 
 function normalizePhone(value) {
@@ -136,6 +229,8 @@ function ensureHeaders(sheet) {
     range.setValues([HEADERS]);
     sheet.setFrozenRows(1);
   }
+
+  sheet.getRange(1, 3, sheet.getMaxRows(), 1).setNumberFormat("@");
 }
 
 function json(data) {
