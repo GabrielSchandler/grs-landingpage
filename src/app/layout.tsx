@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
+import { googleAdsConversionId } from "@/lib/google-ads";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,7 +37,6 @@ export default function RootLayout({
 }>) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
   const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
-  const googleAdsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID;
   const gtagId = ga4Id || googleAdsConversionId;
 
   return (

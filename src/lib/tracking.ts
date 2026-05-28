@@ -1,3 +1,5 @@
+import { googleAdsConversionId, googleAdsLeadLabel } from "@/lib/google-ads";
+
 export type TrackingEvent =
   | "lead_form_submit"
   | "lead_form_error"
@@ -37,9 +39,6 @@ export function trackEvent(event: TrackingEvent, params: Record<string, unknown>
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push({ event, ...params });
   window.gtag?.("event", event, params);
-
-  const googleAdsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID;
-  const googleAdsLeadLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL_LEAD;
 
   if (
     conversionEvents.has(event) &&
