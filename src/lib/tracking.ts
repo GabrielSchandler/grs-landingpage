@@ -12,9 +12,14 @@ export type TrackingEvent =
 
 const conversionEvents = new Set<TrackingEvent>([
   "lead_form_submit",
+  "lead_form_autosave",
   "hero_quick_form_submit",
+  "hero_quick_autosave",
+  "whatsapp_popup_autosave",
   "whatsapp_lead_submit",
 ]);
+
+const conversionStorageKey = "grs-google-ads-lead-conversion";
 
 declare global {
   interface Window {
@@ -36,13 +41,37 @@ export function trackEvent(event: TrackingEvent, params: Record<string, unknown>
   const googleAdsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID;
   const googleAdsLeadLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL_LEAD;
 
-  if (conversionEvents.has(event) && googleAdsConversionId && googleAdsLeadLabel) {
+  if (
+    conversionEvents.has(event) &&
+    googleAdsConversionId &&
+    googleAdsLeadLabel &&
+    !hasTrackedLeadConversion()
+  ) {
     window.gtag?.("event", "conversion", {
       send_to: `${googleAdsConversionId}/${googleAdsLeadLabel}`,
       event_callback: undefined,
+      conversion_source_event: event,
       ...params,
     });
+
+    markLeadConversionTracked();
   }
 
   window.fbq?.("trackCustom", event, params);
+}
+
+function hasTrackedLeadConversion() {
+  try {
+    return window.sessionStorage.getItem(conversionStorageKey) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function markLeadConversionTracked() {
+  try {
+    window.sessionStorage.setItem(conversionStorageKey, "true");
+  } catch {
+    // Tracking should never block the lead flow.
+  }
 }
