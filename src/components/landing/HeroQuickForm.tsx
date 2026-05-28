@@ -148,7 +148,7 @@ export function HeroQuickForm() {
             )}
           >
             {isSubmitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Send className="size-4" aria-hidden />}
-            {isSubmitting ? "Registrando..." : "Enviar"}
+            {isSubmitting ? "Registrando..." : "Quero minha análise gratuita"}
           </button>
         </div>
 

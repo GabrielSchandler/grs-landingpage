@@ -1,10 +1,39 @@
+"use client";
+
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { useSyncExternalStore } from "react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
 import { navItems } from "@/lib/landing-content";
 
+function subscribeToUrlChanges() {
+  return () => {};
+}
+
+function getPaidTrafficMode() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get("utm_source")?.toLowerCase() ?? "";
+  const medium = params.get("utm_medium")?.toLowerCase() ?? "";
+
+  return (
+    params.has("gclid") ||
+    params.has("gbraid") ||
+    params.has("wbraid") ||
+    params.has("ads") ||
+    source.includes("google") ||
+    medium.includes("cpc") ||
+    medium.includes("paid")
+  );
+}
+
 export function Header() {
+  const paidTrafficMode = useSyncExternalStore(subscribeToUrlChanges, getPaidTrafficMode, () => false);
+
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/88 backdrop-blur-xl">
       <Container className="flex min-h-20 items-center justify-between gap-4">
@@ -19,13 +48,19 @@ export function Header() {
           />
         </a>
 
-        <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-700 md:flex" aria-label="Navegação">
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href} className="transition hover:text-red-700">
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        {!paidTrafficMode ? (
+          <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-700 md:flex" aria-label="Navegação">
+            {navItems.map((item) => (
+              <a key={item.href} href={item.href} className="transition hover:text-red-700">
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        ) : (
+          <p className="hidden text-sm font-semibold text-zinc-600 md:block">
+            Análise gratuita pelo WhatsApp
+          </p>
+        )}
 
         <ButtonLink href="#lead-form" className="sm:inline-flex" icon={<ArrowRight size={16} aria-hidden />}>
           Solicitar análise

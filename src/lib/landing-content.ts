@@ -36,11 +36,11 @@ export const navItems = [
 ];
 
 export const heroCopy = {
-  title: "Entenda exatamente o que você paga no seu contrato bancário",
+  title: "Sua parcela está pesando e a dívida parece não diminuir?",
   subtitle:
-    "A GRS faz uma análise técnica e educacional do seu contrato bancário, em linguagem clara, para você entender cada taxa, tarifa e condição contratual antes de tomar qualquer decisão.",
+    "A GRS analisa seu contrato bancário para identificar possíveis cobranças questionáveis e orientar o próximo passo com segurança.",
   support:
-    "Quando a dívida parece não diminuir mês após mês, o problema quase sempre está na estrutura do contrato. Você tem o direito de saber o que está pagando.",
+    "Se a parcela já compromete seu orçamento, entender juros, tarifas e condições do contrato pode evitar uma decisão no escuro.",
   diagnosticTitle: "Diagnóstico técnico completo",
   diagnosticText: "Juros • CET • Tarifas • Cláusulas contratuais",
 };
@@ -48,18 +48,18 @@ export const heroCopy = {
 export const heroBadges = [
   { label: "100% Gratuito", icon: HeartHandshake },
   { label: "Sem compromisso", icon: ShieldCheck },
-  { label: "Retorno em até 1h", icon: Clock },
+  { label: "Até 1h em horário comercial", icon: Clock },
 ];
 
 export const heroIndicators = [
   { title: "Análise técnica especializada", icon: BadgeCheck },
-  { title: "Retorno em até 1h", icon: Clock },
+  { title: "Até 1h em horário comercial", icon: Clock },
   { title: "Atendimento em todo o Brasil", icon: MapPin },
 ];
 
 export const credibilityNumbers = [
   { value: "100%", label: "Gratuito e sem compromisso" },
-  { value: "1h", label: "Prazo máximo de retorno" },
+  { value: "1h", label: "em horário comercial" },
   { value: "5+", label: "Modalidades de contrato" },
   { value: "Brasil", label: "Atendimento nacional" },
 ];
@@ -186,7 +186,7 @@ export const leadCards = [
     icon: CheckCircle2,
   },
   {
-    title: "Retorno em até 24 horas",
+    title: "Retorno em até 1h em horário comercial",
     text: "Nossa equipe analisa seu caso e entra em contato pelo WhatsApp para explicar o que foi encontrado.",
     icon: FileSearch,
   },
@@ -263,7 +263,7 @@ export const faqs = [
   {
     question: "Em quanto tempo recebo o retorno?",
     answer:
-      "Nossa equipe busca retornar em até 24 horas úteis após o envio dos dados. Em casos que exigem análise mais detalhada ou documentação adicional, o prazo pode ser um pouco maior — e você será avisado.",
+      "Nossa equipe busca retornar em até 1h em horário comercial após o envio dos dados. Em casos que exigem análise mais detalhada ou documentação adicional, o prazo pode ser um pouco maior — e você será avisado.",
   },
   {
     question: "A análise garante redução da parcela?",
