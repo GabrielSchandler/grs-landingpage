@@ -1,3 +1,4 @@
+import { AnalysisDeliverables } from "@/components/landing/AnalysisDeliverables";
 import { ContractTypes } from "@/components/landing/ContractTypes";
 import { CtaBanner } from "@/components/landing/CtaBanner";
 import { FAQSection } from "@/components/landing/FAQSection";
@@ -17,6 +18,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <AnalysisDeliverables />
         <PainPoints />
         <HowItWorks />
         <ContractTypes />

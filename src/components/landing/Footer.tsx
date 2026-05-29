@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
+import { Building2, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { WhatsAppLeadButton } from "@/components/landing/WhatsAppLeadButton";
+import { companyInfo } from "@/lib/landing-content";
 
 export function Footer() {
   return (
@@ -32,6 +33,30 @@ export function Footer() {
             <p className="mt-2 max-w-2xl text-xs leading-5 text-zinc-600">
               As informações desta página têm caráter informativo e não representam promessa de resultado.
             </p>
+
+            <div className="mt-6 grid max-w-3xl gap-3 text-xs leading-5 text-zinc-400 sm:grid-cols-3">
+              <div className="rounded-lg border border-zinc-800 bg-zinc-900/70 p-3">
+                <div className="flex items-center gap-2 font-semibold text-zinc-200">
+                  <Building2 className="size-4 text-red-400" aria-hidden />
+                  CNPJ
+                </div>
+                <p className="mt-1">{companyInfo.cnpj}</p>
+              </div>
+              <div className="rounded-lg border border-zinc-800 bg-zinc-900/70 p-3 sm:col-span-2">
+                <div className="flex items-center gap-2 font-semibold text-zinc-200">
+                  <MapPin className="size-4 text-red-400" aria-hidden />
+                  Endereço
+                </div>
+                <p className="mt-1">{companyInfo.address}</p>
+              </div>
+              <div className="rounded-lg border border-zinc-800 bg-zinc-900/70 p-3 sm:col-span-3">
+                <div className="flex items-center gap-2 font-semibold text-zinc-200">
+                  <ShieldCheck className="size-4 text-red-400" aria-hidden />
+                  {companyInfo.serviceArea}
+                </div>
+                <p className="mt-1">Atendimento consultivo para clientes em todo o Brasil.</p>
+              </div>
+            </div>
           </div>
 
           <nav className="flex flex-wrap gap-4 text-sm text-zinc-500" aria-label="Links do rodapé">

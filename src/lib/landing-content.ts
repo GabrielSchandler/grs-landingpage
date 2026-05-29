@@ -64,6 +64,46 @@ export const credibilityNumbers = [
   { value: "Brasil", label: "Atendimento nacional" },
 ];
 
+export const analysisDeliverables = [
+  {
+    title: "Verificação de juros",
+    text: "Avaliamos a taxa contratada, o custo total e se há pontos que merecem atenção técnica.",
+    icon: CircleDollarSign,
+  },
+  {
+    title: "Verificação de seguros inclusos",
+    text: "Identificamos seguros, serviços agregados e cobranças que podem passar despercebidas no contrato.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Verificação de tarifas",
+    text: "Mapeamos tarifas, encargos e valores adicionais para mostrar o que compõe a sua parcela.",
+    icon: FileSearch,
+  },
+  {
+    title: "Orientação inicial",
+    text: "Você recebe uma leitura clara dos pontos encontrados e uma orientação responsável sobre o próximo passo.",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "Explicação em linguagem simples",
+    text: "Transformamos juros, CET, tarifas e cláusulas em uma conversa objetiva, sem juridiquês desnecessário.",
+    icon: Sparkles,
+  },
+];
+
+export const companyAuthorityStats = [
+  { value: "200 mil+", label: "contratos analisados" },
+  { value: "10+ anos", label: "de atuação" },
+  { value: "Nacional", label: "atendimento em todo o Brasil" },
+];
+
+export const companyInfo = {
+  cnpj: "63.562.890/0001-45",
+  address: "Avenida São Miguel, 1440 - Vila Marieta, São Paulo - SP, 03620-000",
+  serviceArea: "Atendimento nacional",
+};
+
 export const pains = [
   {
     title: "Parcela pesando no orçamento",
@@ -177,6 +217,8 @@ export const authorityBullets = [
   "Atendimento dedicado ao seu perfil",
   "Dados protegidos conforme LGPD",
   "Diagnóstico honesto, sem expectativas infladas",
+  "CNPJ ativo e atendimento nacional",
+  "Mais de 10 anos de atuação",
 ];
 
 export const leadCards = [
