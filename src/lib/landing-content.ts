@@ -100,7 +100,7 @@ export const companyAuthorityStats = [
 
 export const companyInfo = {
   cnpj: "63.562.890/0001-45",
-  address: "Avenida São Miguel, 1440 - Vila Marieta, São Paulo - SP, 03620-000",
+  address: "R. Evangelina, 321 - Vila Carrão, São Paulo - SP, 03421-000",
   serviceArea: "Atendimento nacional",
 };
 
