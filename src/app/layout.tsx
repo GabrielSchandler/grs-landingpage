@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { googleAdsConversionId } from "@/lib/google-ads";
@@ -14,20 +14,53 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Defina NEXT_PUBLIC_SITE_URL nas variáveis de ambiente (Vercel) com o domínio REAL desta landing.
+// O fallback abaixo evita OG/canonical quebrados em build sem a env configurada.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.grssolucao.com.br";
+
 export const metadata: Metadata = {
-  title: "GRS Soluções | Análise de contratos bancários",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Análise de Contratos Bancários e Revisão de Juros | GRS Soluções",
+    template: "%s | GRS Soluções",
+  },
   description:
-    "Análise técnica e educacional de contratos bancários: entenda parcelas, juros, tarifas e condições do seu financiamento ou empréstimo.",
+    "Análise técnica e gratuita do seu contrato bancário: entenda juros, tarifas e condições do seu financiamento ou empréstimo. Fale com um especialista da GRS.",
+  keywords: [
+    "análise de contrato bancário",
+    "revisão de juros",
+    "juros abusivos",
+    "financiamento de veículo",
+    "crédito consignado",
+    "revisão de contrato",
+    "GRS Soluções",
+  ],
+  authors: [{ name: "GRS Soluções" }],
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
-    title: "GRS Soluções | Análise de contratos bancários",
+    type: "website",
+    locale: "pt_BR",
+    url: siteUrl,
+    siteName: "GRS Soluções",
+    title: "Análise de Contratos Bancários e Revisão de Juros | GRS Soluções",
     description:
       "Entenda cada cobrança do seu contrato bancário com uma análise técnica gratuita e em linguagem clara.",
-    type: "website",
   },
   twitter: {
+    card: "summary_large_image",
+    title: "Análise de Contratos Bancários e Revisão de Juros | GRS Soluções",
     description:
       "Entenda cada cobrança do seu contrato bancário com uma análise técnica gratuita e em linguagem clara.",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#C31230",
 };
 
 export default function RootLayout({
@@ -103,6 +136,50 @@ export default function RootLayout({
             `}
           </Script>
         )}
+
+        {/* Dados estruturados (JSON-LD) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "LegalService",
+                  "@id": `${siteUrl}/#organization`,
+                  name: "GRS Soluções",
+                  description:
+                    "Análise técnica de contratos bancários, revisão de juros abusivos, tarifas indevidas e negociação com instituições financeiras.",
+                  url: siteUrl,
+                  telephone: "+5511940394084",
+                  email: "gerencia@grssolucao.com.br",
+                  priceRange: "$$",
+                  address: {
+                    "@type": "PostalAddress",
+                    streetAddress: "R. Evangelina, 321 - Vila Carrão",
+                    addressLocality: "São Paulo",
+                    addressRegion: "SP",
+                    postalCode: "03421-000",
+                    addressCountry: "BR",
+                  },
+                  areaServed: { "@type": "Country", name: "Brasil" },
+                  sameAs: [
+                    "https://www.instagram.com/grssolucaoltda/",
+                    "https://www.facebook.com/profile.php?id=61584917309422",
+                  ],
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": `${siteUrl}/#website`,
+                  url: siteUrl,
+                  name: "GRS Soluções",
+                  inLanguage: "pt-BR",
+                  publisher: { "@id": `${siteUrl}/#organization` },
+                },
+              ],
+            }),
+          }}
+        />
 
         {children}
       </body>
