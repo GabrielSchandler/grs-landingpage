@@ -1,3 +1,4 @@
+import { getAttribution } from "@/lib/attribution";
 import type { LeadOrigin } from "@/lib/lead-schema";
 
 export type MinimalLead = {
@@ -45,7 +46,7 @@ export async function saveLead(payload: MinimalLead & LeadDetails & { origem: Le
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ ...payload, attribution: getAttribution() }),
   });
 
   const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;

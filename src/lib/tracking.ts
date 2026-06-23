@@ -12,12 +12,13 @@ export type TrackingEvent =
   | "simulator_submit"
   | "cta_click";
 
+// Only real, intentful submissions count as Google Ads conversions. Autosave
+// events still fire to dataLayer/GA4 (and persist the lead to the sheet), but
+// they must NOT be sent as conversions — otherwise Smart Bidding optimizes for
+// people who merely start typing instead of qualified leads.
 const conversionEvents = new Set<TrackingEvent>([
   "lead_form_submit",
-  "lead_form_autosave",
   "hero_quick_form_submit",
-  "hero_quick_autosave",
-  "whatsapp_popup_autosave",
   "whatsapp_lead_submit",
 ]);
 

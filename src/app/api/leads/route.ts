@@ -29,6 +29,38 @@ const draftOrigins = new Set<LeadOrigin>([
   "whatsapp_popup_autosave",
 ]);
 
+const attributionKeys = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "fbclid",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+  "landing_page",
+  "referrer",
+] as const;
+
+function sanitizeAttribution(input: unknown): Record<string, string> {
+  if (!input || typeof input !== "object") {
+    return {};
+  }
+
+  const source = input as Record<string, unknown>;
+  const result: Record<string, string> = {};
+
+  for (const key of attributionKeys) {
+    const value = source[key];
+    if (typeof value === "string" && value.trim()) {
+      result[key] = value.trim().slice(0, 512);
+    }
+  }
+
+  return result;
+}
+
 export async function POST(request: Request) {
   const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
   const webhookSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET;
@@ -75,6 +107,7 @@ export async function POST(request: Request) {
         meta: {
           submitted_at: submittedAt,
           page_url: request.headers.get("referer") || null,
+          attribution: sanitizeAttribution(body?.attribution),
         },
       }),
       cache: "no-store",

@@ -11,6 +11,16 @@ const HEADERS = [
   "mensagem",
   "origem",
   "page_url",
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "fbclid",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+  "referrer",
 ];
 
 function doPost(e) {
@@ -77,6 +87,8 @@ function doPost(e) {
 }
 
 function buildLeadRow(lead, meta) {
+  const attribution = (meta && meta.attribution) || {};
+
   return [
     meta.submitted_at || new Date().toISOString(),
     lead.nome || "",
@@ -88,6 +100,16 @@ function buildLeadRow(lead, meta) {
     lead.mensagem || "",
     lead.origem || "landing_page",
     meta.page_url || "",
+    attribution.gclid || "",
+    attribution.gbraid || "",
+    attribution.wbraid || "",
+    attribution.fbclid || "",
+    attribution.utm_source || "",
+    attribution.utm_medium || "",
+    attribution.utm_campaign || "",
+    attribution.utm_term || "",
+    attribution.utm_content || "",
+    attribution.referrer || "",
   ];
 }
 
@@ -221,11 +243,15 @@ function getOrCreateSheet(spreadsheet, sheetName) {
 function ensureHeaders(sheet) {
   const range = sheet.getRange(1, 1, 1, HEADERS.length);
   const currentHeaders = range.getValues()[0];
-  const hasHeaders = currentHeaders.some(function (cell) {
-    return String(cell).trim() !== "";
+
+  // Rewrite when the header row is missing or no longer matches the canonical
+  // list (e.g. after new attribution columns were added). Existing lead rows
+  // keep their data; the new columns simply stay blank for older rows.
+  const matches = HEADERS.every(function (header, index) {
+    return currentHeaders[index] === header;
   });
 
-  if (!hasHeaders) {
+  if (!matches) {
     range.setValues([HEADERS]);
     sheet.setFrozenRows(1);
   }
