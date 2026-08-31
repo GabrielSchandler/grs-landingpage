@@ -23,6 +23,13 @@ cp .env.example .env.local
 - `GOOGLE_SHEETS_WEBHOOK_SECRET` — segredo privado usado para proteger o webhook
 - `NEXT_PUBLIC_WHATSAPP_NUMBER` — Número do WhatsApp (ex.: 5511963322546)
 
+> ⚠️ **Essa variável vence o código.** Ela é embutida no bundle durante o
+> `build`, então o valor que está no painel da Vercel é o que abre no
+> WhatsApp — trocar o número em `src/lib/whatsapp.ts` não adianta se ela
+> estiver definida com outro. Foi assim que a linha banida em 31/08/2026
+> continuou no ar depois da correção. Ao trocar o número, mexa **nos dois
+> lugares** e refaça o deploy.
+
 **Recomendado para tráfego pago:**
 - `NEXT_PUBLIC_GTM_ID` — Seu Google Tag Manager ID (GTM-XXXXX)
 - `NEXT_PUBLIC_GA4_ID` — Seu Google Analytics 4 ID (G-XXXXX)
