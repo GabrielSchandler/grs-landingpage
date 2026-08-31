@@ -199,7 +199,7 @@ export function WhatsAppLeadButton({
                   value={whatsapp}
                   onChange={(event) => setWhatsapp(event.target.value)}
                   className="min-h-11 w-full rounded-md border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-red-400 focus:ring-4 focus:ring-red-100"
-                  placeholder="(11) 94039-4084"
+                  placeholder="(11) 96332-2546"
                   autoComplete="tel"
                   inputMode="tel"
                   autoFocus

@@ -1,7 +1,7 @@
 export const defaultWhatsAppMessage =
   "Olá! Estou interessado em reduzir a parcela do meu financiamento. Gostaria de mais informações.";
 
-const fallbackWhatsAppNumber = "5511940394084";
+const fallbackWhatsAppNumber = "5511963322546";
 
 export function getWhatsAppHref(message = defaultWhatsAppMessage) {
   const configuredNumber =

@@ -151,7 +151,7 @@ export default function RootLayout({
                   description:
                     "Análise técnica de contratos bancários, revisão de juros abusivos, tarifas indevidas e negociação com instituições financeiras.",
                   url: siteUrl,
-                  telephone: "+5511940394084",
+                  telephone: "+5511963322546",
                   email: "gerencia@grssolucao.com.br",
                   priceRange: "$$",
                   address: {

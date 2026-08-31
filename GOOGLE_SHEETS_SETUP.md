@@ -51,7 +51,7 @@ No projeto da Vercel, va em `Settings > Environment Variables` e adicione:
 ```text
 GOOGLE_SHEETS_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
 GOOGLE_SHEETS_WEBHOOK_SECRET=o-mesmo-segredo-do-apps-script
-NEXT_PUBLIC_WHATSAPP_NUMBER=5511940394084
+NEXT_PUBLIC_WHATSAPP_NUMBER=5511963322546
 ```
 
 Depois faca um novo deploy.
